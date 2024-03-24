@@ -1,0 +1,43 @@
+.intro{
+    border: 0px solid black;
+    margin-bottom: 40px;
+    max-width: 200px;
+}
+.mainpage-body{
+    margin: 0px 20px;
+    margin-top: 20px;
+}
+.mainpage-body>div:nth-child(1){
+    padding-bottom: 5px;
+   border-bottom: 3px solid black;
+}
+.mainpage-body>div:nth-child(1){
+    text-align: left;
+}
+.mainpage-body-subcontainer{
+    margin:0px 20px;
+    padding-top: 10px;
+    border-top: 1px solid black;
+}
+.mainpage-body-subcontainer:nth-child(2){
+    border-top: 0px;
+}
+Form{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    margin-bottom: 10px;
+    padding:5px 0px;
+    border: 0px solid black;
+}
+.form-row{
+    border: 0px solid black;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top:5px
+}
+.form-group{
+    margin-bottom: 15px;
+    margin-right: 25px;
+}

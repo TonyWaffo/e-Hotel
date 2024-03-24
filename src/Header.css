@@ -1,0 +1,14 @@
+.header-transparent{
+    background-color: transparent;
+    position: sticky;
+    top:0;
+    width: 100%;
+    z-index: 1000;
+}
+.header-opaque{
+    background-color: rgb(25, 86, 130);
+    position: sticky;
+    top:0;
+    width: 100%;
+    z-index: 1000;
+}

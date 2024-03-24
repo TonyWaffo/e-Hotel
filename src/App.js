@@ -1,24 +1,53 @@
-import logo from './logo.svg';
+import { BrowserRouter as Router,Routes,Route,Link } from 'react-router-dom';
+import { useEffect,useState, useRef,createContext } from 'react';
 import './App.css';
+import MainPage from './MainPage';
+import Header from './Header';
+import RoomPage from './RoomPage'
+
+
+export const bannerContext=createContext();
 
 function App() {
+  //set is the banner is visible or not
+  const [isBannerVisible,setBannerVisble]=useState(true);
+  
+  //hold a reference to the banner component
+  const bannerRef=useRef(null);
+
+
+  //run everytime
+  useEffect(()=>{
+    const handleScroll=()=>{
+      if(bannerRef.current){
+        //take the bounding rectangle of the banner component
+        const bannerRect=bannerRef.current.getBoundingClientRect();
+        setBannerVisble(!(bannerRect.bottom -70<=0 ))
+
+      }
+    }
+    //triggers, when user scrolls
+    window.addEventListener('scroll',handleScroll);
+
+    //cleanup listener
+    //return ()=>removeEventListener('scroll',handleScroll);
+  },[])
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <Header isTransparent={isBannerVisible} />
+        <bannerContext.Provider value={bannerRef}>
+          <Routes>
+            <Route path="/" Component={MainPage}/>
+            <Route path="/rooms" Component={RoomPage}/>
+          </Routes>
+        </bannerContext.Provider>
+
+      </div>
+    </Router>
+
   );
 }
 
