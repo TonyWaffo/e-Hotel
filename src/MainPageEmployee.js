@@ -106,6 +106,11 @@ function MainPageEmployee({role}) {
 
         <Form >
           <div className='form-row'>
+            <Form.Group className="form-group" controlId="formBasicLocationForClient">
+              <Form.Label>Location for</Form.Label>
+              <Form.Control type="text" name="clientID" placeholder="#clientID" />
+            </Form.Group>
+
             <Form.Group className="form-group" controlId="formBasicDepartureDate">
               <Form.Label>Arrival date</Form.Label>
               <Form.Control type="date" name="arrivalDate" placeholder="Enter full name" />

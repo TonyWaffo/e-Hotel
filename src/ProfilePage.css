@@ -1,0 +1,50 @@
+.profile-section{
+    width:500px;
+    height: 100%;
+    position: fixed;
+    border: 0px solid black;
+    background-image: url("/public/images/sideNav.jpeg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 0px 0px 0px 20px;
+    z-index: 200;
+    top:0;
+    right:0;
+    transition: 0.5s;
+    color: white;
+}
+.profile-section.visible{
+    transform: translateX(0);
+}
+
+.profile-section.hidden{
+    transform: translateX(100%);
+}
+.icon-container{
+    display: flex;
+}
+.profile{
+    width:100%;
+    padding-top: 0px;
+    display: flex;
+    flex-direction: column;
+    border: 0px solid black;
+    align-items: center;
+    justify-content: center;
+}
+.profile Form{
+    width: 300px;
+    border: 0px solid black;
+
+}
+.profile .form-group{
+    width: 100%;
+    border: 0px solid black;
+}
+.profile a{
+    color:rgb(247, 183, 105);
+    text-decoration: none;
+}
+.profile a:hover{
+    color:rgb(236, 154, 55);
+}

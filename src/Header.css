@@ -3,12 +3,12 @@
     position: sticky;
     top:0;
     width: 100%;
-    z-index: 1000;
+    z-index: 100;
 }
 .header-opaque{
     background-color: rgb(25, 86, 130);
     position: sticky;
     top:0;
     width: 100%;
-    z-index: 1000;
+    z-index: 100;
 }

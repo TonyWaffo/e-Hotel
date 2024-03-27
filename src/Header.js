@@ -6,7 +6,7 @@ import { CgProfile } from "react-icons/cg";
 import "./Header.css";
 
 
-const Header=({isTransparent})=>{
+const Header=({isTransparent,setProfileSectionVisibility})=>{
     return(
         <section className={isTransparent==true ? "header-transparent":"header-opaque"}>
             <Navbar  className="nav-bar " bg="" data-bs-theme="dark">
@@ -14,7 +14,7 @@ const Header=({isTransparent})=>{
                     <Navbar.Brand as={Link} to ="/">e-Hotel</Navbar.Brand>
                     <Nav className="nav-menu">
                         {/*<Nav.Link as={Link} to ="/rooms">Rooms</Nav.Link>*/}
-                        <Nav.Link as={Link} to ="/">Sign in <CgProfile size={30} color="white"/></Nav.Link>
+                        <Nav.Link onClick={()=>setProfileSectionVisibility(true)}>Sign in <CgProfile size={30} color="white"/></Nav.Link>
                     </Nav>
                 </Container>
             </Navbar>
