@@ -22,7 +22,7 @@ function SignIn({showSignInSection}) {
       
       <div className='profile'>
         <div className='container title'>
-        <CgProfile size={50} color="white"/>
+          <CgProfile size={50} color="white"/>
           <h1>Sign in</h1> 
         </div>
         <div>

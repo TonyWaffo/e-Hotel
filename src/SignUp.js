@@ -20,10 +20,8 @@ function SignUp({showSignInSection}) {
   return (
     <>
       <div className='profile'>
-        <div className='container intro'>
-        <CgProfile size={50} color="white"/>
+          <CgProfile size={50} color="white"/>
           <h1>Sign Up</h1>
-        </div>
         <div>
           <Form className='authentication-form'>
             <Form.Group className="form-group" controlId="formBasicName">
