@@ -17,7 +17,7 @@ function App() {
   const [isBannerVisible,setBannerVisible]=useState(true);
 
   //decide if we hide or unhide the profile section
-  const[profileSectionVisibility,setProfileSectionVisibility]=useState(false);
+  const[profileSectionVisibility,setProfileSectionVisibility]=useState({isVisible:false,userType:""});
   
   //hold a reference to the banner component
   const bannerRef=useRef(null);
@@ -48,8 +48,8 @@ function App() {
     <Router>
       <div className="App">
         <Header isTransparent={isBannerVisible} setProfileSectionVisibility={setProfileSectionVisibility}/>
-        <profileContext.Provider value={setProfileSectionVisibility}>
-          <Profile visibility={profileSectionVisibility} setProfileSectionVisibility={setProfileSectionVisibility}/>
+        <profileContext.Provider value={{visibility:profileSectionVisibility, setVisibility:setProfileSectionVisibility }}>
+          <Profile visibility={profileSectionVisibility} setVisibility={setProfileSectionVisibility}/>
         </profileContext.Provider>
         
         <bannerContext.Provider value={bannerRef}>

@@ -11,10 +11,10 @@ import { profileContext } from './App';
 
 function SignUp({showSignInSection}) {
 
-  const setProfileSectionVisibility=useContext(profileContext);
+  const {setVisibility}=useContext(profileContext);
 
   const handleRegistration = () => {
-    setProfileSectionVisibility(false);
+    setVisibility({isVisible:false,userType:""});
   }
 
   return (

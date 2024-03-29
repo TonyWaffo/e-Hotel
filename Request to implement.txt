@@ -1,0 +1,45 @@
+- add minNumberRoom and maxNumberRoom to the search input
+
+- employee can just sign in
+
+- create dashboard for admin where he can: 
++insert an employee with the name, address, role(employee),phone number, NAS
++delete an employee with his id
++update an employee info such as the name, address,phone number, NAS
++insert a room with the price, the capacity,.............
++delete a room with his id,
++update a room info such as the price,
++insert a hotel with the email, phone number,class,numberRoom(trigger +1),address,nomHotel,ChainID
++update a hotel info such as with email, phone number,class,address,nomHotel
++delete hotel with id, numberRoom(trigger -1)
++delete client with id
++get allEmployee
++get allHotels
++get allRooms from a particular hotel
++get Hotel with hotelID
++get Room from a particular hotel
++get employee
+
+
+-search room
++search a room with price (between min and maxPrice), capacity, hotelChain, hotelCategory, number of Hotel(between min and maxHotel) and return hotelChain, hotel name,roomId, categorie of hotel, commodity, issues, price
+
+
+-create reservation 
++insert into reservation the dateDebut,dateFin, reserDate,clientId,employeeID(null),archiveID(trigger),roomID
+
+
+-create location from scratch
++insert into location the dateDebut,dateFin, reserDate,clientId,employeeID,reservationID(null),archiveID(trigger),roomID
+
+
+-create a location from reservation
++insert into location the dateDebut,dateFin, reserDate,clientId,employeeID,reservationID,archiveID(trigger),roomID
+
+
+-search a reservation
++select a reservation with the clientID and return the info relative to the room, the arrivDate, the deparDate and the clientID
+
+
+
+

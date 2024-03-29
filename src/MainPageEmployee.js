@@ -148,9 +148,14 @@ function MainPageEmployee({role}) {
               </Form.Select>
             </Form.Group>
 
-            <Form.Group className="form-group" controlId="formBasicSuperficy">
-              <Form.Label>number of hotels</Form.Label>
-              <Form.Control type="number" name="superficy" placeholder="" />
+            <Form.Group className="form-group" controlId="formBasicMinBumberRooms">
+              <Form.Label>Min number of rooms</Form.Label>
+              <Form.Control type="number" name="minNumberRooms" placeholder="" />
+            </Form.Group>
+
+            <Form.Group className="form-group" controlId="formBasicMaxBumberRooms">
+              <Form.Label>Max number of rooms</Form.Label>
+              <Form.Control type="number" name="maxNumberRooms" placeholder="" />
             </Form.Group>
 
           </div>

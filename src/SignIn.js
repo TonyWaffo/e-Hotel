@@ -10,10 +10,10 @@ import { profileContext } from './App';
 
 
 function SignIn({showSignInSection}) {
-  const setProfileSectionVisibility=useContext(profileContext);
+  const {visibility,setVisibility}=useContext(profileContext);
 
   const handleLogin = () => {
-    setProfileSectionVisibility(false);
+    setVisibility({isVisible:false,userType:""});
   }
 
 
@@ -41,7 +41,9 @@ function SignIn({showSignInSection}) {
             <Button variant="dark" className="btn mt-4" type="button" name="login" onClick={handleLogin}>
               Login
             </Button>
-            <span>Don't have an account, <Link onClick={()=>showSignInSection(false)}>Create one</Link></span>
+            {visibility.userType=="client" &&
+              <span>Don't have an account, <Link onClick={()=>showSignInSection(false)}>Create one</Link></span>
+            }
 
           </Form>
         </div>

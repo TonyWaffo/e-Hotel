@@ -5,7 +5,7 @@ import SignUp from './SignUp';
 import { FaWindowClose } from "react-icons/fa";
 
 
-function Profile({visibility,setProfileSectionVisibility}) {
+function Profile({visibility,setVisibility}) {
     const[signInSection,showSignInSection]=useState(true);
 
 
@@ -15,16 +15,16 @@ function Profile({visibility,setProfileSectionVisibility}) {
   
     return (
       <>
-            <div className={(visibility === true) ? 'profile-section visible' : 'profile-section hidden'}>
+            <div className={(visibility.isVisible === true) ? 'profile-section visible' : 'profile-section hidden'}>
               <div className='icon-container'>
-              <FaWindowClose onClick={() => setProfileSectionVisibility(false)} size={40} style={{cursor:'pointer'}}   />
+              <FaWindowClose onClick={() => {setVisibility({ isVisible: false, userType: "" });showSignInSection(true)}} size={40} style={{cursor:'pointer'}}   />
               </div>
 
                 {signInSection === true && <div className='profile'>
                   <SignIn showSignInSection={showSignInSection} />
                   </div>
                 }
-                {signInSection !== true && <div className='profile'>
+                {(signInSection !== true && visibility.userType=="client") && <div className='profile'>
                   <SignUp showSignInSection={showSignInSection}/>
                   </div>
                 }
