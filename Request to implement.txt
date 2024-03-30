@@ -1,24 +1,61 @@
-- add minNumberRoom and maxNumberRoom to the search input
+- add minNumberRoom and maxNumberRoom to the search input (done)
 
-- employee can just sign in
+- employee can just sign in (done)
 
 - create dashboard for admin where he can: 
-+insert an employee with the name, address, role(employee),phone number, NAS
-+delete an employee with his id
-+update an employee info such as the name, address,phone number, NAS
-+insert a room with the price, the capacity,.............
-+delete a room with his id,
-+update a room info such as the price,
-+insert a hotel with the email, phone number,class,numberRoom(trigger +1),address,nomHotel,ChainID
-+update a hotel info such as with email, phone number,class,address,nomHotel
-+delete hotel with id, numberRoom(trigger -1)
-+delete client with id
-+get allEmployee
-+get allHotels
-+get allRooms from a particular hotel
-+get Hotel with hotelID
-+get Room from a particular hotel
-+get employee
+    +insert an employee with the name, address, role(employee),phone number, NAS
+        insert into from employe (nom,adresse,telephone,role,nas) values (name, address,phone,role,nas);
+
+    +delete an employee with his id
+        delete from employe where employe_id=employeeId;
+        
+    +update an employee info such as the name, address,phone number, NAS
+        update employe set
+
+    +insert a room with the price, the capacity,.............
+        insert into chambre (prix,capacite,commodite,vue,extensible,probleme) values (price,capacity,commodity,view,extensible.probleme);
+
+    +delete a room with his id,
+        delete from chambre where chambre_id=roomId;
+
+    +update a room info such as the price,
+        update employe set prix=price where chambre_id=roomId;
+
+    +insert a hotel with the email, phone number,class,numberRoom(trigger +1),address,nomHotel,ChainID
+
+    +update a hotel info such as with email, phone number,class,address,nomHotel
+    +delete hotel with id, numberRoom(trigger -1)
+
+    +get allClients
+        select * from clint;
+
+    +get client with client id
+        select * from client where client_id=clientId;
+
+    +delete client with id
+        delete from client where client_id=clientId;
+        
+    +get allEmployees
+        select * from employe;
+
+    +get employee wuth emploee id
+        select * from employe where employe_id=employeeId;
+
+    +delete employee with id
+        delete from employee where employe_id=employeeId;
+
+    +get allHotels
+        select * from hotel;
+
+    +get allRooms from a particular hotel
+        select * from chambre where hotel_id=hotelId;
+
+    +get Hotel with hotelID
+        select * from hotel where hotel_id=hotelId;
+
+    +get Room from a particular hotel
+        select * from chambre where hotel_id=hotelId; 
+
 
 
 -search room
