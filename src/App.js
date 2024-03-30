@@ -17,9 +17,12 @@ function App() {
   //set is the banner is visible or not
   const [isBannerVisible,setBannerVisible]=useState(true);
 
-  //decide if we hide or unhide the profile section
-  const[profileSectionVisibility,setProfileSectionVisibility]=useState({isVisible:false,userType:""});
+  //decide if we hide or unhide the profile section, set the type of user and judge if the main page can upload his 
+  //content base on the user role
+  const[profileSectionVisibility,setProfileSectionVisibility]=useState({isVisible:false,userType:"",canUpdateMain:true});
   
+  //get the prevSate of the user profile
+  //const [prevStateVisibility, setPrevStateVisibility] = useState({userType:"",canUpdateMain:true});
   //hold a reference to the banner component
   const bannerRef=useRef(null);
 
@@ -55,10 +58,8 @@ function App() {
         
         <bannerContext.Provider value={bannerRef}>
           <Routes>
-            <Route path="/" Component={MainPage}/>
+            <Route path="/" Component={() => <MainPage role={profileSectionVisibility.userType} updateSection={profileSectionVisibility.canUpdateMain} />}/>
             <Route path="/rooms" Component={RoomPage}/>
-            <Route path="/signin" Component={SignIn}/>
-            <Route path="/signup" Component={SignUp}/>
             <Route path="/dashboard" Component={Dashboard}/>
           </Routes>
         </bannerContext.Provider>

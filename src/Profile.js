@@ -17,7 +17,7 @@ function Profile({visibility,setVisibility}) {
       <>
             <div className={(visibility.isVisible === true) ? 'profile-section visible' : 'profile-section hidden'}>
               <div className='icon-container'>
-              <FaWindowClose onClick={() => {setVisibility({ isVisible: false, userType: "" });showSignInSection(true)}} size={40} style={{cursor:'pointer'}}   />
+              <FaWindowClose onClick={() => {setVisibility(prevState=>({...prevState,isVisible:false}));showSignInSection(true)}} size={40} style={{cursor:'pointer'}}   />
               </div>
 
                 {signInSection === true && <div className='profile'>

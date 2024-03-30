@@ -14,9 +14,9 @@ const Header=({isTransparent,setProfileSectionVisibility})=>{
                     <Navbar.Brand as={Link} to ="/">e-Hotel</Navbar.Brand>
                     <Nav className="nav-menu">
                         {/*<Nav.Link as={Link} to ="/rooms">Rooms</Nav.Link>*/}
-                        <Nav.Link onClick={()=>setProfileSectionVisibility({isVisible:true,userType:"client"})}>Client </Nav.Link>
-                        <Nav.Link onClick={()=>setProfileSectionVisibility({isVisible:true,userType:"employee"})} >Admin</Nav.Link>
-                        <Nav.Link onClick={()=>setProfileSectionVisibility({isVisible:true,userType:"employee"})}>Employee </Nav.Link>
+                        <Nav.Link onClick={()=>setProfileSectionVisibility({isVisible:true,userType:"client",canUpdateMain:false})}>Client </Nav.Link>
+                        <Nav.Link onClick={()=>setProfileSectionVisibility({isVisible:true,userType:"admin",canUpdateMain:false})} >Admin</Nav.Link>
+                        <Nav.Link onClick={()=>setProfileSectionVisibility({isVisible:true,userType:"employee",canUpdateMain:true})}>Employee </Nav.Link>
                         <Nav.Link><CgProfile size={30} color="white"/></Nav.Link>
                     </Nav>
                 </Container>
