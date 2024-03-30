@@ -12,7 +12,13 @@
     width: 100%;
     z-index: 100;
 }
+.navbar-brand:hover{
+    transition: 0.1s;
+    transform: scale(1.4);
+}
+
 .nav-menu .nav-link:not(:last-child):hover{
     transition: 0.1s;
     transform: scale(1.2);
 }
+

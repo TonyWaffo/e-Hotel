@@ -1,6 +1,25 @@
+@font-face {
+  font-family: 'papyrus';
+  src: url(/public/fonts/papyrus.TTF);
+}
+@font-face {
+  font-family:'Ink free';
+  src: url(/public/fonts/Inkfree.ttf);
+}
+@font-face {
+  font-family:'Comic Sans MS';
+  src: url(/public/fonts/LDFComicSans.ttf);
+}
+@font-face {
+  font-family:'caviar dreams';
+  src: url(/public/fonts/CaviarDreams.ttf);
+}
+
 .App {
   text-align: center;
+  font-family: 'caviar dreams', 'Comic Sans MS','papyrus', 'Ink free',sans-serif;
 }
+
 .header, .banner{
   margin: 0px 0px;
   border: 0px solid black;

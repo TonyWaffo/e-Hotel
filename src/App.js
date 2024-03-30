@@ -7,6 +7,7 @@ import RoomPage from './RoomPage';
 import Profile from './Profile';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
+import Dashboard from './Dashboard';
 
 
 export const bannerContext=createContext();
@@ -58,6 +59,7 @@ function App() {
             <Route path="/rooms" Component={RoomPage}/>
             <Route path="/signin" Component={SignIn}/>
             <Route path="/signup" Component={SignUp}/>
+            <Route path="/dashboard" Component={Dashboard}/>
           </Routes>
         </bannerContext.Provider>
 
