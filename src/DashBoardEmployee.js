@@ -1,87 +1,193 @@
+import axios from 'axios';
 import './App.css';
 import Banner from './Banner';
 import './Dashboard.css';
-import './MainPage.css'
+import './MainPage.css';
+import { useRef } from 'react';
 import { Form } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 
 
 function DashboardEmployee() {
+    // reference the inputs relative to creation
+    const nameRef = useRef(null);
+    const addressRef = useRef(null);
+    const phoneNumberRef = useRef(null);
+    const nasRef = useRef(null);
+
+    // reference the inputs relative to update
+    const nameRef2 = useRef(null);
+    const addressRef2 = useRef(null);
+    const phoneNumberRef2 = useRef(null);
+    const nasRef2 = useRef(null);
+    const employeeIdRef = useRef(null);
+
+    // reference the inputs relative to deletion
+    const employeeIdRef2 = useRef(null);
+
+    //create account
+    const handleAccountCreation = async () => {
+        const name = nameRef.current.value;
+        const address = addressRef.current.value;
+        const phoneNumber = phoneNumberRef.current.value;
+        const nas = nasRef.current.value;
+        if (name !== "" && address !== "" && phoneNumber !== "" && nas !== "") {
+            try {
+                const response = await axios.post('URL', {
+                    name,
+                    address,
+                    phoneNumber,
+                    nas,
+                });
+
+                console.log("Employee Account created successfully:", response.data);
+            } catch (error) {
+                console.log("error creating employee account:", error);
+            }
+            console.log("employee data:", { name, address, phoneNumber, nas });
+        } else {
+            console.error("Fill inputs for creating employee account")
+        };
+
+    }
+
+    //delete account
+    const handleAccountDeletion = async () => {
+        const employeeId = employeeIdRef2.current.value;
+        if (employeeId !== "") {
+            try {
+                const response = await axios.delete(`<span class="math-inline">\{DELETE\_employee\_URL\}/</span>{employeeId}`);
+
+                console.log("Employee Account deleted successfully:", response.data);
+            } catch (error) {
+                console.error("Error deleting employee account:", error);
+            }
+
+            console.log("employee data:",employeeId);
+        } else {
+            console.error("fill inputs for deleting employee account");
+        }
+    }
+
+    //update account
+    const handleAccountUpdate = async () => {
+        const employeeId = employeeIdRef.current.value;
+        const name = nameRef2.current.value;
+        const address = addressRef2.current.value;
+        const phoneNumber = phoneNumberRef2.current.value;
+        const nas = nasRef2.current.value;
+        if (employeeId !== "" && name !== "" && address !== "" && phoneNumber !== "" && nas !== "") {
+            try {
+                const response = await axios.put('URL', {
+                    employeeId,
+                    name,
+                    address,
+                    phoneNumber,
+                    nas,
+                });
+
+                console.log("Account updated successfully:", response.data);
+            } catch (error) {
+                console.log("error updating employee data:", error);
+            }
+            console.log("employee data:", { employeeId, name, address, phoneNumber, nas });
+        } else {
+            console.error("fill inputs for updating employee");
+        }
+    }
+
+    //view all employees
+    const viewAllemployees = async () => {
+        try {
+            const response = await axios.get('URL');
+
+            console.log("All employees:", response.data);
+        } catch (error) {
+            console.log("error Fetching employees:", error);
+        }
+    }
+
     return (
         <>
             <div className='mainpage-body-subcontainer'>
 
-            <Form >
+                <Form >
                     <h3>Employee section</h3>
 
-                    <h4>Create an employee account</h4>
-                    <div className='form-row'>
+                    <h4>Create employee account</h4>
+                    <div className='form-row '>
                         <Form.Group className="form-group" controlId="formBasicName">
                             <Form.Label>Name</Form.Label>
-                            <Form.Control type="text" name="name" placeholder="Enter full name" />
+                            <Form.Control type="text" ref={nameRef} placeholder="Enter full name" />
                         </Form.Group>
 
 
                         <Form.Group className="form-group" controlId="formBasicAddress">
                             <Form.Label>Address</Form.Label>
-                            <Form.Control type="text" name="address" placeholder="Street, Street number, City, Province, Country" />
+                            <Form.Control type="text" ref={addressRef} name="address" placeholder="Street, Street number, City, Province, Country" />
                         </Form.Group>
 
                         <Form.Group className="form-group" controlId="formBasicPhoneNumber">
                             <Form.Label>Phone Number</Form.Label>
-                            <Form.Control type="number" name="phoneNumber" placeholder="Tel" />
+                            <Form.Control type="number" ref={phoneNumberRef} name="phoneNumber" placeholder="Tel" />
                         </Form.Group>
 
                         <Form.Group className="form-group" controlId="formBasicNas">
                             <Form.Label>NAS</Form.Label>
-                            <Form.Control type="text" name="nas" placeholder="XXX XXX XXX" />
+                            <Form.Control type="text" ref={nasRef} name="nas" placeholder="XXX XXX XXX" />
                         </Form.Group>
                     </div>
 
-                    <Button variant="dark" className="btn mb-4" type="button" name="submit" >
+                    <Button variant="dark" className="btn mb-4" type="button" name="create" onClick={() => handleAccountCreation()} >
                         Create account
                     </Button>
 
-                    <h4>Update an employee acount</h4>
+                    <h4>Update employee accout</h4>
                     <div className='form-row'>
-                    <Form.Group className="form-group" controlId="formBasicName">
+
+                        <Form.Group className="form-group" controlId="formBasicEmployeeId">
+                            <Form.Label>Employee Id</Form.Label>
+                            <Form.Control type="text" ref={employeeIdRef} name="employeeId" placeholder="#employeeId" />
+                        </Form.Group>
+
+                        <Form.Group className="form-group" controlId="formBasicName">
                             <Form.Label>Name</Form.Label>
-                            <Form.Control type="text" name="name2" placeholder="Enter full name" />
+                            <Form.Control type="text" ref={nameRef2} name="name" placeholder="Enter full name" />
                         </Form.Group>
 
 
                         <Form.Group className="form-group" controlId="formBasicAddress">
                             <Form.Label>Address</Form.Label>
-                            <Form.Control type="text" name="address" placeholder="Street, Street number, City, Province, Country" />
+                            <Form.Control type="text" ref={addressRef2} name="address" placeholder="Street, Street number, City, Province, Country" />
                         </Form.Group>
 
                         <Form.Group className="form-group" controlId="formBasicPhoneNumber">
                             <Form.Label>Phone Number</Form.Label>
-                            <Form.Control type="number" name="phoneNumber" placeholder="Tel" />
+                            <Form.Control type="number" ref={phoneNumberRef2} name="phoneNumber" placeholder="Tel" />
                         </Form.Group>
 
                         <Form.Group className="form-group" controlId="formBasicNas">
                             <Form.Label>NAS</Form.Label>
-                            <Form.Control type="text" name="nas" placeholder="XXX XXX XXX" />
+                            <Form.Control type="text" ref={nasRef2} name="nas" placeholder="XXX XXX XXX" />
                         </Form.Group>
                     </div>
 
-                    <Button variant="dark" className="btn mb-4" type="button" name="submit" >
+                    <Button variant="dark" className="btn mb-4" type="button" name="update" onClick={() => handleAccountUpdate()}>
                         Update account
                     </Button>
 
-                    <h4>Fire an employee</h4>
+                    <h4>Remove employee</h4>
                     <div className='form-row'>
                         <Form.Group className="form-group" controlId="formBasicEmployeeId">
-                            <Form.Label>Employee Id</Form.Label>
-                            <Form.Control type="text" name="employeeId" placeholder="#employeeId" />
+                            <Form.Label>employee Id</Form.Label>
+                            <Form.Control type="text" ref={employeeIdRef2} name="employeeId" placeholder="#employeeId" />
                         </Form.Group>
                     </div>
 
-                    <Button variant="dark" className="btn mb-4" type="button" name="submit" >
-                        Fire employee
+                    <Button variant="dark" className="btn mb-4" type="button" name="delete" onClick={() => handleAccountDeletion()}>
+                        Remove employee
                     </Button>
-                    <Button variant="dark" className="btn mb-4" type="button" name="submit"  style={{position:"absolute",right:"0",bottom:"0"}}>
+                    <Button variant="dark" className="btn mb-4" type="button" name="viewEmployees" onClick={() => viewAllemployees()} style={{ position: "absolute", right: "0", bottom: "0" }} >
                         See all employees
                     </Button>
                 </Form>
