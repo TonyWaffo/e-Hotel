@@ -33,7 +33,7 @@ function DashboardClient() {
         const nas = nasRef.current.value;
         if (name !== "" && address !== "" && phoneNumber !== "" && nas !== "") {
             try {
-                const response = await axios.post('localhost/dashboard_create_client_account', {
+                const response = await axios.post('/dashboard_create_client_account', {
                     name,
                     address,
                     phoneNumber,
@@ -56,7 +56,7 @@ function DashboardClient() {
         const clientId = clientIdRef2.current.value;
         if (clientId !== "") {
             try {
-                const response = await axios.delete(`<span class="math-inline">\{DELETE\_CLIENT\_URL\}/</span>{clientId}`);
+                const response = await axios.delete(`/delete_client/${clientId}`);
 
                 console.log("Account deleted successfully:", response.data);
             } catch (error) {
@@ -78,7 +78,7 @@ function DashboardClient() {
         const nas = nasRef2.current.value;
         if (clientId !== "" && name !== "" && address !== "" && phoneNumber !== "" && nas !== "") {
             try {
-                const response = await axios.put('localhost/dashboard_update_client_account', {
+                const response = await axios.put('/dashboard_update_client_account', {
                     clientId,
                     name,
                     address,
@@ -99,7 +99,7 @@ function DashboardClient() {
     //view all clients
     const viewAllClients = async () => {
         try {
-            const response = await axios.get('localhost/dashboard_view_account');
+            const response = await axios.get('/dashboard_view_account');
 
             console.log("All clients:", response.data);
         } catch (error) {
