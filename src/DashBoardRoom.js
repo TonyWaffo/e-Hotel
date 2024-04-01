@@ -32,7 +32,7 @@ function DashboardRoom() {
         const commodity = commodityRef.current.value;
         if (roomId !== "" && issues !== "" && view !== "" && commodity !== "") {
             try {
-                const response = await axios.post('URL', {
+                const response = await axios.post('localhost/dashboard_create_room', {
                     roomId,
                     issues,
                     view,
@@ -76,7 +76,7 @@ function DashboardRoom() {
         const commodity = commodityRef2.current.value;
         if (roomId !== "" && issues !== "" && view !== "" && commodity !== "") {
             try {
-                const response = await axios.put('URL', {
+                const response = await axios.put('localhost/dashboard_update_room', {
                     roomId,
                     issues,
                     view,
@@ -96,7 +96,7 @@ function DashboardRoom() {
     //view all room
     const viewAllRooms = async () => {
         try {
-            const response = await axios.get('URL');
+            const response = await axios.get('localhost/dashboard_view_rooms');
 
             console.log("All rooms:", response.data);
         } catch (error) {

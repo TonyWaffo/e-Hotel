@@ -6,6 +6,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { Link } from 'react-router-dom';
 import { profileContext } from './App';
+import axios from 'axios';
 
 
 
@@ -13,7 +14,26 @@ function SignUp({showSignInSection}) {
 
   const {setVisibility}=useContext(profileContext);
 
-  const handleRegistration = () => {
+  const handleRegistration = async () => {
+    /*if (name !== "" && address !== "" && phoneNumber !== "" && nas !== "" && role!== "") {
+      try {
+          const response = await axios.post('localhost/dashboard_create_employee_account', {
+              name,
+              address,
+              phoneNumber,
+              nas,
+              role,
+          });
+
+          console.log("Employee Account created successfully:", response.data);
+      } catch (error) {
+          console.log("error creating employee account:", error);
+      }
+      console.log("employee data:", { name, address, phoneNumber, nas,role });
+  } else {
+      console.error("Fill inputs for creating employee account")
+  };*/
+
     setVisibility({isVisible:false,userType:""});
   }
 

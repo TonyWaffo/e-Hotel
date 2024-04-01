@@ -7,7 +7,7 @@ import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 
 
-function MainPageClient({role}) {
+function MainPageClient({ role }) {
 
   const clientIdRef = useRef(null);
   const arrivalDateRef = useRef(null);
@@ -27,7 +27,7 @@ function MainPageClient({role}) {
   const roomSearch = async () => {
 
     //it's a reservation
-    const reservation=true;
+    const reservation = true;
 
     //availableRooms represents the rooms displayed from the employee's filter
     let availableRooms;
@@ -68,7 +68,7 @@ function MainPageClient({role}) {
       roomSearchCriteria.view = (viewRef.current.value === "true") ? true : false;
 
       try {
-        const response = await axios.post('localhost/search_rooms', roomSearchCriteria);
+        const response = await axios.post('localhost/search_rooms_client', roomSearchCriteria);
         console.log("Rooms found successfully:", response.data);
         availableRooms = response.data;
         //navigate to the room page with the all the rooms available, the role of the user and tell if it's a reservation or not
@@ -105,7 +105,7 @@ function MainPageClient({role}) {
 
     //navigate to the room page with the all the rooms available, the role of the user and tell if it's a reservation or not
     //remove the following line when connected to the server
-    navigate('/rooms', { state: { availableRooms, reservation,role } }); 
+    navigate('/rooms', { state: { availableRooms, reservation, role } });
 
 
   }
@@ -116,10 +116,15 @@ function MainPageClient({role}) {
         <h2>Find your room</h2>
       </div>
       <div className='mainpage-body-subcontainer'>
-        
+
         <Form >
           <div className='form-row'>
-          <Form.Group className="form-group" controlId="formBasicArrivalDate">
+            <Form.Group className="form-group" controlId="formBasicLocationForClient">
+              <Form.Label>Location for</Form.Label>
+              <Form.Control type="text" name="clientId" ref={clientIdRef} placeholder="#clientID" />
+            </Form.Group>
+
+            <Form.Group className="form-group" controlId="formBasicArrivalDate">
               <Form.Label>Arrival date</Form.Label>
               <Form.Control type="date" name="arrivalDate" ref={arrivalDateRef} placeholder="Enter full name" />
             </Form.Group>
@@ -130,11 +135,11 @@ function MainPageClient({role}) {
               <Form.Control type="date" name="departureDate" ref={departureDateref} placeholder="email@email.com" />
             </Form.Group>
           </div>
-        
+
         </Form>
       </div>
       <div className='mainpage-body-subcontainer'>
-      <Form >
+        <Form >
           <h3>Hotel</h3>
           <div className='form-row'>
 
@@ -174,7 +179,7 @@ function MainPageClient({role}) {
         </Form>
       </div>
       <div className='mainpage-body-subcontainer'>
-      <Form >
+        <Form >
           <h3>Room</h3>
           <div className='form-row'>
             <Form.Group className="form-group" controlId="formBasicMinPrice">

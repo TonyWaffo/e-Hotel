@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/Button';
 import { CgProfile } from "react-icons/cg";
 import { Link } from 'react-router-dom';
 import { profileContext } from './App';
+import axios from 'axios';
 
 
 
@@ -15,9 +16,30 @@ function SignIn({showSignInSection}) {
 
   const navigate=useNavigate();
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
+    /*
 
-    //if succes
+    if (name !== "" && address !== "" && phoneNumber !== "" && nas !== "" && role!== "") {
+      try {
+          const response = await axios.post('localhost/dashboard_create_employee_account', {
+              name,
+              address,
+              phoneNumber,
+              nas,
+              role,
+          });
+
+          console.log("Employee Account created successfully:", response.data);
+      } catch (error) {
+          console.log("error creating employee account:", error);
+      }
+      console.log("employee data:", { name, address, phoneNumber, nas,role });
+  } else {
+      console.error("Fill inputs for creating employee account")
+  };
+  */
+
+    //if success
 
     if (visibility.userType=="client" || visibility.userType=="employee" ){
       setVisibility(prevState=>({...prevState,isVisible:false,canUpdateMain:true}));

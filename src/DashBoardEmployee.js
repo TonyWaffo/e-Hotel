@@ -14,12 +14,14 @@ function DashboardEmployee() {
     const addressRef = useRef(null);
     const phoneNumberRef = useRef(null);
     const nasRef = useRef(null);
+    const roleRef=useRef(null);
 
     // reference the inputs relative to update
     const nameRef2 = useRef(null);
     const addressRef2 = useRef(null);
     const phoneNumberRef2 = useRef(null);
     const nasRef2 = useRef(null);
+    const roleRef2=useRef(null);
     const employeeIdRef = useRef(null);
 
     // reference the inputs relative to deletion
@@ -31,20 +33,22 @@ function DashboardEmployee() {
         const address = addressRef.current.value;
         const phoneNumber = phoneNumberRef.current.value;
         const nas = nasRef.current.value;
-        if (name !== "" && address !== "" && phoneNumber !== "" && nas !== "") {
+        const role = roleRef.current.value;
+        if (name !== "" && address !== "" && phoneNumber !== "" && nas !== "" && role!== "") {
             try {
-                const response = await axios.post('URL', {
+                const response = await axios.post('localhost/dashboard_create_employee_account', {
                     name,
                     address,
                     phoneNumber,
                     nas,
+                    role,
                 });
 
                 console.log("Employee Account created successfully:", response.data);
             } catch (error) {
                 console.log("error creating employee account:", error);
             }
-            console.log("employee data:", { name, address, phoneNumber, nas });
+            console.log("employee data:", { name, address, phoneNumber, nas,role });
         } else {
             console.error("Fill inputs for creating employee account")
         };
@@ -76,21 +80,23 @@ function DashboardEmployee() {
         const address = addressRef2.current.value;
         const phoneNumber = phoneNumberRef2.current.value;
         const nas = nasRef2.current.value;
-        if (employeeId !== "" && name !== "" && address !== "" && phoneNumber !== "" && nas !== "") {
+        const role = roleRef2.current.value;
+        if (employeeId !== "" && name !== "" && address !== "" && phoneNumber !== "" && nas !== "" && role!== "") {
             try {
-                const response = await axios.put('URL', {
+                const response = await axios.put('localhost/dashboard_update_employee_account', {
                     employeeId,
                     name,
                     address,
                     phoneNumber,
                     nas,
+                    role,
                 });
 
                 console.log("Account updated successfully:", response.data);
             } catch (error) {
                 console.log("error updating employee data:", error);
             }
-            console.log("employee data:", { employeeId, name, address, phoneNumber, nas });
+            console.log("employee data:", { employeeId, name, address, phoneNumber, nas,role });
         } else {
             console.error("fill inputs for updating employee");
         }
@@ -99,7 +105,7 @@ function DashboardEmployee() {
     //view all employees
     const viewAllemployees = async () => {
         try {
-            const response = await axios.get('URL');
+            const response = await axios.get('localhost/dashboard_view_account');
 
             console.log("All employees:", response.data);
         } catch (error) {
@@ -136,6 +142,11 @@ function DashboardEmployee() {
                             <Form.Label>NAS</Form.Label>
                             <Form.Control type="text" ref={nasRef} name="nas" placeholder="XXX XXX XXX" />
                         </Form.Group>
+
+                        <Form.Group className="form-group" controlId="formBasicRole">
+                            <Form.Label>Role</Form.Label>
+                            <Form.Control type="text" ref={roleRef} name="nas" placeholder="ex: Receptionist, server" />
+                        </Form.Group>
                     </div>
 
                     <Button variant="dark" className="btn mb-4" type="button" name="create" onClick={() => handleAccountCreation()} >
@@ -170,6 +181,12 @@ function DashboardEmployee() {
                             <Form.Label>NAS</Form.Label>
                             <Form.Control type="text" ref={nasRef2} name="nas" placeholder="XXX XXX XXX" />
                         </Form.Group>
+
+                        <Form.Group className="form-group" controlId="formBasicRole">
+                            <Form.Label>Role</Form.Label>
+                            <Form.Control type="text" ref={roleRef2} name="nas" placeholder="ex: Receptionist, server" />
+                        </Form.Group>
+                        
                     </div>
 
                     <Button variant="dark" className="btn mb-4" type="button" name="update" onClick={() => handleAccountUpdate()}>

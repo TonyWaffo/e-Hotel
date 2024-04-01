@@ -71,8 +71,12 @@ app.get('/signin', async (req, res) => {
     }
 });
 
-// **Retrieve available rooms: Check all available rooms**
-app.get('/availableRooms', async (req, res) => {
+
+
+
+
+// **Room search for client**
+app.get('/search_rooms_client', async (req, res) => {
     /*the query should match [ departDate, arrivDate,minPrice, maxPrice,capacity,superficy,
     HotelChain,hotelCategory, maybe number of Hotels]
     and the result should include [chainHotel,hotel, numChambre, categories,commodity,
@@ -92,11 +96,161 @@ app.get('/availableRooms', async (req, res) => {
     }
 });
 
-// **Booking: Book a room for the client**
-app.post('/booking', async (req, res) => {
+// **Room search for employee**
+app.get('/search_rooms_employee', async (req, res) => {
+    /*the query should match [ departDate, arrivDate,minPrice, maxPrice,capacity,superficy,
+    HotelChain,hotelCategory, maybe number of Hotels]
+    and the result should include [chainHotel,hotel, numChambre, categories,commodity,
+    issues ,price,departDate, arrivDate]
+    */ 
+    try {
+        const client = await pool.connect();
+        const query = `SELECT * FROM your_table_name`;
+        const result = await client.query(query);
+
+        res.json(result.rows);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error retrieving data' });
+    } finally {
+        client.release(); // Release the connection back to the pool
+    }
+});
+
+// **Reservation: Search reservation**
+app.post('/search_reservation', async (req, res) => {
 
     /**
      * the request for creating reservation should include [arrivDate,departDate,clientID,numChambre]
+     */
+
+    const { name, description } = req.body; // Extract data from request body
+
+    try {
+        const client = await pool.connect();
+        const query = `INSERT INTO your_table_name (name, description) VALUES ($1, $2)`;
+        const values = [name, description];
+        await client.query(query, values);
+
+        res.json({ message: 'Data created successfully!' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error creating data' });
+    } finally {
+        client.release(); // Release the connection back to the pool
+    }
+});
+
+
+// **Booking: create a reservation**
+app.post('/create_reservation', async (req, res) => {
+
+    /**
+     * the request for creating reservation should include [arrivDate,departDate,clientID,numChambre]
+     */
+
+    const { name, description } = req.body; // Extract data from request body
+
+    try {
+        const client = await pool.connect();
+        const query = `INSERT INTO your_table_name (name, description) VALUES ($1, $2)`;
+        const values = [name, description];
+        await client.query(query, values);
+
+        res.json({ message: 'Data created successfully!' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error creating data' });
+    } finally {
+        client.release(); // Release the connection back to the pool
+    }
+});
+
+// **Rental: Rent a rental for the client by the employee**
+app.post('/create_rental', async (req, res) => {
+
+    /**
+     * the request for creating a rental should include [arrivDate,departDate,employeeID,clientID,ReservationID,numChambre]
+     */
+
+    const { name, description } = req.body; // Extract data from request body
+
+    try {
+        const client = await pool.connect();
+        const query = `INSERT INTO your_table_name (name, description) VALUES ($1, $2)`;
+        const values = [name, description];
+        await client.query(query, values);
+
+        res.json({ message: 'Data created successfully!' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error creating data' });
+    } finally {
+        client.release(); // Release the connection back to the pool
+    }
+});
+
+// **Rental: Rent a room for the client by the employee**
+app.post('/lookReservation', async (req, res) => {
+
+    /**
+     * the request for looking reservation should include [reservationID]
+     * and the result should include [chainHotel,hotel, numChambre, categories,commodity,
+     * issues ,price,departDate, arrivDate, clientID]
+     */
+
+    const { name, description } = req.body; // Extract data from request body
+
+    try {
+        const client = await pool.connect();
+        const query = `INSERT INTO your_table_name (name, description) VALUES ($1, $2)`;
+        const values = [name, description];
+        await client.query(query, values);
+
+        res.json({ message: 'Data created successfully!' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error creating data' });
+    } finally {
+        client.release(); // Release the connection back to the pool
+    }
+});
+
+
+
+
+
+
+
+// **Dashroom: Create client account**
+app.post('/dashboard_create_client_account', async (req, res) => {
+
+    /**
+     * the request for creating a rental should include [arrivDate,departDate,employeeID,clientID,ReservationID,numChambre]
+     */
+
+    const { name, description } = req.body; // Extract data from request body
+
+    try {
+        const client = await pool.connect();
+        const query = `INSERT INTO your_table_name (name, description) VALUES ($1, $2)`;
+        const values = [name, description];
+        await client.query(query, values);
+
+        res.json({ message: 'Data created successfully!' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error creating data' });
+    } finally {
+        client.release(); // Release the connection back to the pool
+    }
+});
+
+// **Dashroom: Update client account**
+app.post('/dashboard_update_client_account', async (req, res) => {
+
+    /**
+     * the request for creating a rental should include [arrivDate,departDate,employeeID,clientID,ReservationID,numChambre]
      */
 
     const { name, description } = req.body; // Extract data from request body
@@ -140,13 +294,216 @@ app.post('/rent', async (req, res) => {
     }
 });
 
-// **Rental: Rent a room for the client by the employee**
-app.post('/lookReservation', async (req, res) => {
+
+
+
+
+// **Dashroom: Create employee account**
+app.post('/dashboard_create_employee_account', async (req, res) => {
 
     /**
-     * the request for looking reservation should include [reservationID]
-     * and the result should include [chainHotel,hotel, numChambre, categories,commodity,
-     * issues ,price,departDate, arrivDate, clientID]
+     * the request for creating a rental should include [arrivDate,departDate,employeeID,clientID,ReservationID,numChambre]
+     */
+
+    const { name, description } = req.body; // Extract data from request body
+
+    try {
+        const client = await pool.connect();
+        const query = `INSERT INTO your_table_name (name, description) VALUES ($1, $2)`;
+        const values = [name, description];
+        await client.query(query, values);
+
+        res.json({ message: 'Data created successfully!' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error creating data' });
+    } finally {
+        client.release(); // Release the connection back to the pool
+    }
+});
+
+// **Dashroom: Update employee account**
+app.post('/dashboard_update_employee_account', async (req, res) => {
+
+    /**
+     * the request for creating a rental should include [arrivDate,departDate,employeeID,clientID,ReservationID,numChambre]
+     */
+
+    const { name, description } = req.body; // Extract data from request body
+
+    try {
+        const client = await pool.connect();
+        const query = `INSERT INTO your_table_name (name, description) VALUES ($1, $2)`;
+        const values = [name, description];
+        await client.query(query, values);
+
+        res.json({ message: 'Data created successfully!' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error creating data' });
+    } finally {
+        client.release(); // Release the connection back to the pool
+    }
+});
+
+// **Rental: Rent a room for the client by the employee**
+app.post('/rent', async (req, res) => {
+
+    /**
+     * the request for creating a rental should include [arrivDate,departDate,employeeID,clientID,ReservationID,numChambre]
+     */
+
+    const { name, description } = req.body; // Extract data from request body
+
+    try {
+        const client = await pool.connect();
+        const query = `INSERT INTO your_table_name (name, description) VALUES ($1, $2)`;
+        const values = [name, description];
+        await client.query(query, values);
+
+        res.json({ message: 'Data created successfully!' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error creating data' });
+    } finally {
+        client.release(); // Release the connection back to the pool
+    }
+});
+
+// **dashboard: View all accounts**
+app.post('/dashboard_view_account', async (req, res) => {
+
+    /**
+     * the request for creating a rental should include [arrivDate,departDate,employeeID,clientID,ReservationID,numChambre]
+     */
+
+    const { name, description } = req.body; // Extract data from request body
+
+    try {
+        const client = await pool.connect();
+        const query = `INSERT INTO your_table_name (name, description) VALUES ($1, $2)`;
+        const values = [name, description];
+        await client.query(query, values);
+
+        res.json({ message: 'Data created successfully!' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error creating data' });
+    } finally {
+        client.release(); // Release the connection back to the pool
+    }
+});
+
+
+
+
+
+// **Dashboard: Update hotel**
+app.post('/dashboard_update_hotel', async (req, res) => {
+
+    /**
+     * the request for creating a rental should include [arrivDate,departDate,employeeID,clientID,ReservationID,numChambre]
+     */
+
+    const { name, description } = req.body; // Extract data from request body
+
+    try {
+        const client = await pool.connect();
+        const query = `INSERT INTO your_table_name (name, description) VALUES ($1, $2)`;
+        const values = [name, description];
+        await client.query(query, values);
+
+        res.json({ message: 'Data created successfully!' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error creating data' });
+    } finally {
+        client.release(); // Release the connection back to the pool
+    }
+});
+
+// **Dashboard: View hotels**
+app.post('/dashboard_view_hotels', async (req, res) => {
+
+    /**
+     * the request for creating a rental should include [arrivDate,departDate,employeeID,clientID,ReservationID,numChambre]
+     */
+
+    const { name, description } = req.body; // Extract data from request body
+
+    try {
+        const client = await pool.connect();
+        const query = `INSERT INTO your_table_name (name, description) VALUES ($1, $2)`;
+        const values = [name, description];
+        await client.query(query, values);
+
+        res.json({ message: 'Data created successfully!' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error creating data' });
+    } finally {
+        client.release(); // Release the connection back to the pool
+    }
+});
+
+
+
+
+
+
+// **Dashboard: Create room**
+app.post('/dashboard_create_room', async (req, res) => {
+
+    /**
+     * the request for creating a rental should include [arrivDate,departDate,employeeID,clientID,ReservationID,numChambre]
+     */
+
+    const { name, description } = req.body; // Extract data from request body
+
+    try {
+        const client = await pool.connect();
+        const query = `INSERT INTO your_table_name (name, description) VALUES ($1, $2)`;
+        const values = [name, description];
+        await client.query(query, values);
+
+        res.json({ message: 'Data created successfully!' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error creating data' });
+    } finally {
+        client.release(); // Release the connection back to the pool
+    }
+});
+
+// **Dashboard: Update room**
+app.post('/dashboard_update_room', async (req, res) => {
+
+    /**
+     * the request for creating a rental should include [arrivDate,departDate,employeeID,clientID,ReservationID,numChambre]
+     */
+
+    const { name, description } = req.body; // Extract data from request body
+
+    try {
+        const client = await pool.connect();
+        const query = `INSERT INTO your_table_name (name, description) VALUES ($1, $2)`;
+        const values = [name, description];
+        await client.query(query, values);
+
+        res.json({ message: 'Data created successfully!' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error creating data' });
+    } finally {
+        client.release(); // Release the connection back to the pool
+    }
+});
+
+// **Dashboard: View room**
+app.post('/dashboard_view_rooms', async (req, res) => {
+
+    /**
+     * the request for creating a rental should include [arrivDate,departDate,employeeID,clientID,ReservationID,numChambre]
      */
 
     const { name, description } = req.body; // Extract data from request body

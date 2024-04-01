@@ -8,6 +8,7 @@ import Button from 'react-bootstrap/Button';
 import { useLocation } from 'react-router-dom';
 import MyVerticallyCenteredModal from './MyVerticallyCenteredModal';
 import { MdOutlineWarningAmber } from "react-icons/md";
+import axios from 'axios';
 
 function RoomPage() {
     const [cardError,setCardError]=useState(false);
@@ -23,7 +24,6 @@ function RoomPage() {
 
     //list of all rooms available
     let availableRooms=location.state?.availableRooms || [];
-
 
     let roomFromReservation=location.state?.roomFromReservation || [];
 
@@ -63,16 +63,42 @@ function RoomPage() {
     }
 
 
-    //handle the submission of the booking/rental
-    const handleSubmit=()=>{
+    //Create rental
+    const createRental= async ()=>{
         if(checkCreditCard()){
             //Create a rental  ia the backend
             setCardError(false);
             setModalShow(true);
+
+            //proccess data
+            try {
+                const response = await axios.post('localhost/create_rental', {
+                });
+                console.log(response.data);
+              } catch (error) {
+                console.log("error creating rental:", error);
+              }
             //reset all the forms of the website 
         }else{
             setCardError(true);
         };
+    }
+
+
+    //create reservation
+    const createReservation= async()=>{
+        if ("replace this by a condition if needed") {
+
+            try {
+              const response = await axios.post('localhost/create_reservation', {
+              });
+              console.log(response.data);
+            } catch (error) {
+              console.log("error creating reservation:", error);
+            }
+          } else {
+            console.error("replace this by a condition if needed");
+          };
     }
 
     return (
@@ -94,9 +120,11 @@ function RoomPage() {
                         })}
 
                         {role=="client" && 
-                        <Button variant="primary" className="btn mt-4" type="button" name="submit">
-                            Search room
+                        <Button variant="primary" className="btn mt-4" type="button" name="submit" onClick={createReservation}>
+                            Reserve room
                         </Button>}
+
+                        {/* Set the payment form for the employee */}
                         
                         {role != "client" &&
                             <div className='container mt-4 payment' style={{ maxWidth: '800px' }}>
@@ -122,7 +150,7 @@ function RoomPage() {
                                         <Form.Control type="number" ref={cvcRef} name="cvc" onChange={handleInputChange} placeholder="Enter the 3-dgits CVC" />
                                     </Form.Group>
 
-                                    <Button variant="primary" className="btn mt-4 mb-2" type="button" name="submit" onClick={handleSubmit}>
+                                    <Button variant="primary" className="btn mt-4 mb-2" type="button" name="submit" onClick={createRental}>
                                         Create rental
                                     </Button>
                                 </div>

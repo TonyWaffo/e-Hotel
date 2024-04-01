@@ -71,7 +71,7 @@ function MainPageEmployee({ role }) {
       roomSearchCriteria.view = (viewRef.current.value === "true") ? true : false;
 
       try {
-        const response = await axios.post('localhost/search_rooms', roomSearchCriteria);
+        const response = await axios.post('localhost/search_rooms_employee', roomSearchCriteria);
         console.log("Rooms found successfully:", response.data);
         availableRooms = response.data;
         //navigate to the room page with the all the rooms available, the role of the user and tell if it's a reservation or not
