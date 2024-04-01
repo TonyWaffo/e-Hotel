@@ -4,7 +4,7 @@ import './RoomPage.css';
 import Form from 'react-bootstrap/Form';
 
 
-function Room({room}) {
+function Room({room,isSelected,onSelect}) {
     const [role, setRole] = useState("employee");
 
     //convert the room send into a key/value pair, s that it can be easily displayed on the screen
@@ -17,8 +17,10 @@ function Room({room}) {
             <div className='room-item'>
                 <div className='room-checkbox'>
                     <Form.Check
-                        type={'checkbox'}
+                        type={'radio'}
                         id={room.id}
+                        checked={isSelected}
+                        onChange={onSelect}
                     />
                 </div>
                 <div className='room-details'>

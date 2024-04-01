@@ -11,6 +11,7 @@ import { MdOutlineWarningAmber } from "react-icons/md";
 import axios from 'axios';
 
 function RoomPage() {
+    const [selectedRoom, setSelectedRoom] = useState(null);
     const [cardError,setCardError]=useState(false);
     const [modalShow, setModalShow] = useState(false);
 
@@ -72,8 +73,7 @@ function RoomPage() {
 
             //proccess data
             try {
-                const response = await axios.post('localhost/create_rental', {
-                });
+                const response = await axios.post('localhost/create_rental', selectedRoom);
                 console.log(response.data);
               } catch (error) {
                 console.log("error creating rental:", error);
@@ -90,8 +90,7 @@ function RoomPage() {
         if ("replace this by a condition if needed") {
 
             try {
-              const response = await axios.post('localhost/create_reservation', {
-              });
+              const response = await axios.post('/create_reservation', selectedRoom);
               console.log(response.data);
             } catch (error) {
               console.log("error creating reservation:", error);
@@ -112,11 +111,11 @@ function RoomPage() {
                     <Form >
 
                         {reservation==true && availableRooms.map((room) => {
-                            return <Room key={room.id} room={room} />
+                            return <Room key={room.id} room={room} isSelected={selectedRoom==room} onSelect={() => setSelectedRoom(room)} />
                         })}
 
                         {reservation==false && roomFromReservation.map((room) => {
-                            return <Room key={room.id} room={room} />
+                            return <Room key={room.id} room={room} isSelected={selectedRoom==room} onSelect={() => setSelectedRoom(room)} />
                         })}
 
                         {role=="client" && 
