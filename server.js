@@ -82,10 +82,20 @@ app.get('/search_rooms_client', async (req, res) => {
     and the result should include [chainHotel,hotel, numChambre, categories,commodity,
     issues ,price,departDate, arrivDate]
     */ 
+   //const roomSearchCriteria=req.params;
+   const {clientId,arrivalDate,departureDate,
+    hotelChain,hotelCategory,minNumberRooms,maxNumberRooms,
+    minPrice,maxPrice,capacity,view,expandability
+    }=req.query;
+
    let client;
     try {
         client = await pool.connect();
-        const query = "SELECT * FROM chambre ;";
+        const query = `SELECT * FROM chambre 
+        where prix between ${minPrice} and ${maxPrice}
+         
+        and extensible=${expandability} 
+        and capacite = ${capacity};`;
         const result = await client.query(query);
 
         console.error(result.rows);
