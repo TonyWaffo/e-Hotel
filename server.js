@@ -82,17 +82,21 @@ app.get('/search_rooms_client', async (req, res) => {
     and the result should include [chainHotel,hotel, numChambre, categories,commodity,
     issues ,price,departDate, arrivDate]
     */ 
+   let client;
     try {
-        const client = await pool.connect();
-        const query = `SELECT * FROM your_table_name`;
+        client = await pool.connect();
+        const query = "SELECT * FROM chambre ;";
         const result = await client.query(query);
 
+        console.error(result.rows);
         res.json(result.rows);
     } catch (error) {
-        console.error(error);
+        console.error("error taking data",error);
         res.status(500).json({ message: 'Error retrieving data' });
     } finally {
-        client.release(); // Release the connection back to the pool
+        if (client) {
+            client.release(); // Release the connection back to the pool
+        }
     }
 });
 
@@ -103,14 +107,15 @@ app.get('/search_rooms_employee', async (req, res) => {
     and the result should include [chainHotel,hotel, numChambre, categories,commodity,
     issues ,price,departDate, arrivDate]
     */ 
+   let client;
     try {
-        const client = await pool.connect();
+        client = await pool.connect();
         const query = `SELECT * FROM your_table_name`;
         const result = await client.query(query);
 
         res.json(result.rows);
     } catch (error) {
-        console.error(error);
+        console.error("retrieving data error",error);
         res.status(500).json({ message: 'Error retrieving data' });
     } finally {
         client.release(); // Release the connection back to the pool

@@ -68,7 +68,7 @@ function MainPageClient({ role }) {
       roomSearchCriteria.view = (viewRef.current.value === "true") ? true : false;
 
       try {
-        const response = await axios.post('localhost/search_rooms_client', roomSearchCriteria);
+        const response = await axios.get('http://localhost:5000/search_rooms_client', { params: roomSearchCriteria });
         console.log("Rooms found successfully:", response.data);
         availableRooms = response.data;
         //navigate to the room page with the all the rooms available, the role of the user and tell if it's a reservation or not
@@ -105,7 +105,7 @@ function MainPageClient({ role }) {
 
     //navigate to the room page with the all the rooms available, the role of the user and tell if it's a reservation or not
     //remove the following line when connected to the server
-    navigate('/rooms', { state: { availableRooms, reservation, role } });
+    //navigate('/rooms', { state: { availableRooms, reservation, role } });
 
 
   }
