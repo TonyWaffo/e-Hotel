@@ -4,6 +4,7 @@
     top:0;
     width: 100%;
     z-index: 100;
+    font-weight: 1000;
 }
 .header-opaque{
     background-color: rgb(25, 86, 130);
@@ -11,9 +12,10 @@
     top:0;
     width: 100%;
     z-index: 100;
+    font-weight: 1000;
 }
 .navbar-brand:hover{
-    transition: 0.1s;
+    transition: 0.2s;
     transform: scale(1.4);
 }
 

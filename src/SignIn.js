@@ -30,6 +30,7 @@ function SignIn({showSignInSection}) {
           });
 
           console.log("Employee Account created successfully:", response.data);
+          //the response should include the the client id
       } catch (error) {
           console.log("error creating employee account:", error);
       }

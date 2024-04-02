@@ -75,6 +75,7 @@ function RoomPage() {
             try {
                 const response = await axios.post('localhost/create_rental', selectedRoom);
                 console.log(response.data);
+                //setModalShow(true);
               } catch (error) {
                 console.log("error creating rental:", error);
               }
@@ -87,14 +88,18 @@ function RoomPage() {
 
     //create reservation
     const createReservation= async()=>{
-        if ("replace this by a condition if needed") {
+        if (selectedRoom!=null) {
 
             try {
               const response = await axios.post('/create_reservation', selectedRoom);
+              //the response should include the reservation id
               console.log(response.data);
+              //setModalShow(true);
             } catch (error) {
               console.log("error creating reservation:", error);
             }
+            setModalShow(true);
+            console.log(selectedRoom);
           } else {
             console.error("replace this by a condition if needed");
           };
@@ -160,7 +165,7 @@ function RoomPage() {
                 <MyVerticallyCenteredModal
                     show={modalShow}
                     onHide={() => setModalShow(false)}
-                    details={selectedData}
+                    details={selectedRoom}
                 />
             </section>
         </>

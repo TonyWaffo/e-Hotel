@@ -3,6 +3,11 @@ import Modal from 'react-bootstrap/Modal';
 
 
 const MyVerticallyCenteredModal=(props)=> {
+  // Ensure props.selectedRoom exists before accessing its properties
+  const room = props.details || {};
+  console.log(room) 
+
+
   return (
     <Modal
       {...props}
@@ -18,11 +23,10 @@ const MyVerticallyCenteredModal=(props)=> {
       <Modal.Body>
         <h4>Confirmation</h4>
         <p>
-          Detail1<br/>
-          Detail2<br/>
-          Detail3<br/>
-          Detail4<br/>
-          Detail5<br/>
+          <span>Hotel: </span>{room.hotel}<br/>
+          <span>Reservation Id: </span>{room.id}<br/>
+          <span>Price: </span>{room.price}<br/>
+          <span>Category: </span>{room.categories}<br/>
 
         </p>
       </Modal.Body>
