@@ -1,5 +1,5 @@
 import './App.css';
-import { useContext,useState } from 'react';
+import { useContext,useState,useRef } from 'react';
 import './ProfilePage.css';
 import { CgProfile } from "react-icons/cg";
 import Form from 'react-bootstrap/Form';
@@ -7,32 +7,60 @@ import Button from 'react-bootstrap/Button';
 import { Link } from 'react-router-dom';
 import { profileContext } from './App';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 
 
 function SignUp({showSignInSection}) {
 
-  const {setVisibility}=useContext(profileContext);
+  const nameRef=useRef(null);
+  const nasRef=useRef(null);
+  const phoneRef=useRef(null);
+  const addressRef=useRef(null);
+
+  const navigate = useNavigate();
+  const {visibility,setVisibility}=useContext(profileContext);
 
   const handleRegistration = async () => {
-    /*if (name !== "" && address !== "" && phoneNumber !== "" && nas !== "" && role!== "") {
-      try {
-          const response = await axios.post('localhost/dashboard_create_employee_account', {
-              name,
-              address,
-              phoneNumber,
-              nas,
-              role,
-          });
+    const name = nameRef.current.value;
+    const nas = nasRef.current.value;
+    const phone = phoneRef.current.value;
+    const address = addressRef.current.value;
 
-          console.log("Employee Account created successfully:", response.data);
+    if (name !== "" && nas !== "" && phone !== "" && address !== "") {
+      
+      try {
+        const response = await axios.post('http://localhost:5000/signup', {
+          name,
+          nas,
+          phone,
+          address
+        });
+
+        console.log("Employee Account created successfully:", response.data);
+
+
+        if (visibility.userType == "client") {
+          setVisibility(prevState => ({ ...prevState, isVisible: false, canUpdateMain: true }));
+          navigate('/',{ state: { } })
+        } else if( visibility.userType == "employee"){
+          setVisibility(prevState => ({ ...prevState, isVisible: false, canUpdateMain: true }));
+          navigate('/',{ state: { } })
+        }
+        else {
+          setVisibility(prevState => ({ ...prevState, isVisible: false, canUpdateMain: true }));
+          //navigate to the room page with the all the rooms available, the role of the user and tell if it's a reservation or not
+          navigate('/dashboard');
+        }
+        //the response should include the the client id
+        
       } catch (error) {
-          console.log("error creating employee account:", error);
+        console.log("error creating employee account:", error);
       }
-      console.log("employee data:", { name, address, phoneNumber, nas,role });
-  } else {
+      console.log("employee data:", { name, nas });
+    } else {
       console.error("Fill inputs for creating employee account")
-  };*/
+    };
 
     setVisibility({isVisible:false,userType:""});
   }
@@ -46,29 +74,24 @@ function SignUp({showSignInSection}) {
           <Form className='authentication-form'>
             <Form.Group className="form-group" controlId="formBasicName">
               <Form.Label>Name</Form.Label>
-              <Form.Control type="text" name="name" placeholder="First name & last Name" />
-            </Form.Group>
-
-            <Form.Group className="form-group" controlId="formBasicEmail">
-              <Form.Label>Email</Form.Label>
-              <Form.Control type="email" name="email" placeholder="email@email.com" />
+              <Form.Control type="text" ref={nameRef} name="name" placeholder="First name & last Name" />
             </Form.Group>
 
 
             <Form.Group className="form-group" controlId="formBasicNas">
               <Form.Label>Nas</Form.Label>
-              <Form.Control type="text" name="nas" placeholder="XXX XXX XXX" />
+              <Form.Control type="text" ref={nasRef} name="nas" placeholder="XXX XXX XXX" />
             </Form.Group>
 
             <Form.Group className="form-group" controlId="formBasicPhone">
               <Form.Label>Phone number</Form.Label>
-              <Form.Control type="number" name="phone" placeholder="10 digits phone number" />
+              <Form.Control type="number"ref={phoneRef} name="phone" placeholder="10 digits phone number" />
             </Form.Group>
 
 
-            <Form.Group className="form-group" controlId="formBasicPassword">
-              <Form.Label>Password</Form.Label>
-              <Form.Control type="password" name="password" placeholder=" Use a strong password" />
+            <Form.Group className="form-group" controlId="formBasicAddress">
+              <Form.Label>Address</Form.Label>
+              <Form.Control type="text" ref={addressRef} name="address" placeholder=" Street number, city, Country" />
             </Form.Group>
 
             <Button variant="dark" className="btn mt-4" type="button" name="login" onClick={handleRegistration}>

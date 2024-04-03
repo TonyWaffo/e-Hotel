@@ -24,3 +24,6 @@
   margin: 0px 0px;
   border: 0px solid black;
 }
+.input-error{
+  color:red;
+}

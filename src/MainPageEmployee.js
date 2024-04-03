@@ -1,9 +1,10 @@
 import './App.css';
 import './MainPage.css';
 import Form from 'react-bootstrap/Form';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
+import { ImCross } from "react-icons/im";
 import axios from 'axios';
 
 
@@ -22,6 +23,9 @@ function MainPageEmployee({ role }) {
   const capacityRef = useRef(null);
   const viewRef = useRef(null);
   const expandabilityRef = useRef(null);
+
+  const [reservationError,setReservationError]=useState({error:false,message:""});
+  const [roomSearchError,setRoomSearchError]=useState({error:false,message:""});
 
 
 
@@ -68,20 +72,25 @@ function MainPageEmployee({ role }) {
       roomSearchCriteria.capacity = parseInt(capacityRef.current.value, 10);
 
       //convert to boolean
-      roomSearchCriteria.view = (viewRef.current.value === 'true') ? true : false;
+      roomSearchCriteria.expandability = (expandabilityRef.current.value === 'true') ? true : false;
 
       try {
         const response = await axios.get('http://localhost:5000/search_rooms_employee', { params: roomSearchCriteria });
         console.log('Rooms found successfully:', response.data);
         availableRooms = response.data;
-        //navigate to the room page with the all the rooms available, the role of the user and tell if it's a reservation or not
+        if(availableRooms.length==0){
+          setRoomSearchError({error:true,message:"No Room could be found"});
+        }else{
+          //navigate to the room page with the all the rooms available, the role of the user and tell if it's a reservation or not
         navigate('/rooms', { state: { availableRooms, reservation, role } });
+        setRoomSearchError({error:false,message:""});
+        }
       } catch (error) {
         console.log('error searching rooms:', error);
       }
       console.log('reservation data:', roomSearchCriteria);
     } else {
-      console.error('Fill all inputs for searching rooms');
+      setRoomSearchError({error:true,message:" Fill all inputs"});
     };
 
   }
@@ -102,14 +111,19 @@ function MainPageEmployee({ role }) {
       try {
         const response = await axios.get('http://localhost:5000/search_reservation',{ params: {reservationId} });
         roomFromReservation = response.data;
-        //navigate to the room page with the all the rooms available, the role of the user and tell if it's a reservation or not
+        if(roomFromReservation.length==0){
+          setReservationError({error:true,message:"No room could be found"});
+        }else{
+                  //navigate to the room page with the all the rooms available, the role of the user and tell if it's a reservation or not
         navigate('/rooms', { state: { roomFromReservation, reservation, role } });
+        setReservationError({error:false,message:""});
+        }
       } catch (error) {
         console.log('error searching reservation:', error);
       }
       console.log('reservation id:', reservationId);
     } else {
-      console.error('Fill all inputs for searching reservatiion');
+      setReservationError({error:true,message:" Enter the input"});
     };
   }
 
@@ -125,9 +139,10 @@ function MainPageEmployee({ role }) {
           <div className='form-row'>
             <Form.Group className='form-group' controlId='formBasicReservationId'>
               <Form.Label>Reservation number (id)</Form.Label>
-              <Form.Control type='text' name='reservaionId' ref={reservationIdRef} placeholder='#reservationID' />
+              <Form.Control type='text' name='reservationId' ref={reservationIdRef} placeholder='#reservationID' />
             </Form.Group>
           </div>
+          {reservationError.error && <span className='input-error'><ImCross size={20} />{reservationError.message}</span>}
           <Button variant='dark' className='btn mt-4' type='button' name='submit' onClick={reservationSearch}>
             Turn into location
           </Button>
@@ -241,6 +256,7 @@ function MainPageEmployee({ role }) {
             </Form.Group>
 
           </div>
+          {roomSearchError.error && <span className='input-error'><ImCross size={20} />{roomSearchError.message}</span>}
           <Button variant='dark' className='btn mt-4' type='button' name='submit' onClick={roomSearch}>
             Search room
           </Button>

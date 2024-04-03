@@ -67,15 +67,15 @@ function RoomPage() {
     //Create rental
     const createRental= async ()=>{
         if(checkCreditCard()){
-            //Create a rental  ia the backend
+            //Create a rental  via the backend
             setCardError(false);
-            setModalShow(true);
+            //setModalShow(true);
 
             //proccess data
             try {
-                const response = await axios.post('localhost/create_rental', selectedRoom);
+                const response = await axios.post('http://localhost:5000/create_rental', selectedRoom);
                 console.log(response.data);
-                //setModalShow(true);
+                setModalShow(true);
               } catch (error) {
                 console.log("error creating rental:", error);
               }
@@ -158,7 +158,7 @@ function RoomPage() {
                                         Create rental
                                     </Button>
                                 </div>
-                                {cardError && <span className='card-error'><MdOutlineWarningAmber size={30} />Credit card error</span>}
+                                {cardError && <span className='input-error'><MdOutlineWarningAmber size={30} />Credit card error</span>}
                             </div>}
                     </Form>
                 </div>

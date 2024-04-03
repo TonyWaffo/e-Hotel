@@ -1,9 +1,17 @@
 require('dotenv').config();
 const { Pool } = require('pg');
 const express = require('express');
+const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const app = express();
+
+// Parse JSON bodies
+app.use(bodyParser.json());
+
+// Parse URL-encoded bodies
+app.use(bodyParser.urlencoded({ extended: true }));
+
 const port = process.env.PORT || 5000;
 
 const pool = new Pool({
@@ -26,12 +34,12 @@ app.post('/signup', async (req, res) => {
     //In our case, we should use either the [name, nas, numPhone,address]
     //don't forget to set [role= "client" or "employee"]
 
-    const { name, description } = req.body; // Extract data from request body
+    const { name, nas, phone, address } = req.body; // Extract data from request body
 
     try {
         const client = await pool.connect();
-        const query = `INSERT INTO your_table_name (name, description) VALUES ($1, $2)`;
-        const values = [name, description];
+        const query = `INSERT INTO client (nom, nas,telephone,adresse) VALUES ($1, $2, $3, $4)`;
+        const values = [name, nas, phone, address];
         await client.query(query, values);
 
         res.json({ message: 'Data created successfully!' });
@@ -46,26 +54,24 @@ app.post('/signup', async (req, res) => {
 // **sign In: Get the user profile **
 app.get('/signin', async (req, res) => {
 
-    /*In our case, we should use either:
-    -the [userId] to launch the query in case
-     the employee want to use the clientID to create a location from scratch,
-    -Or the [name, nas] in case someone (client/employee) want to sign in
-    
-    Also we should retreive all info such as [ID, name, role]
-    */
+    const { name, nas, user } = req.query; // Extract data from request body
 
-    const { name, description } = req.body; // Extract data from request body
-
+    let query;
     try {
         const client = await pool.connect();
-        const query = `INSERT INTO your_table_name (name, description) VALUES ($1, $2)`;
-        const values = [name, description];
+
+        if (user == "client") {
+            query = `select client_id from client where nom=$1 and nas=$2;`;
+        } else {
+            query = `select employe_id from employe where nom=$1 and nas=$2;`;
+        }
+        const values = [name, nas];
         await client.query(query, values);
 
-        res.json({ message: 'Data created successfully!' });
+        res.json({ message: 'Logged in successfully!' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Error creating data' });
+        res.status(500).json({ message: 'Error Logging in' });
     } finally {
         client.release(); // Release the connection back to the pool
     }
@@ -179,19 +185,36 @@ app.post('/create_reservation', async (req, res) => {
 // **Rental: Rent a rental for the client by the employee**
 app.post('/create_rental', async (req, res) => {
 
-    const { clientId, arrivalDate, departureDate,
-        hotelChain, hotelCategory, minNumberRooms, maxNumberRooms,
-        minPrice, maxPrice, capacity, view, expandability
-    } = req.body;
+    const { reservation_id, date_reservation,
+        employe_id, client_id, archive_id, chambre_id } = req.body;
+
+    // Get today's date
+    const today = new Date();
+
+    // Extract day, month, and year
+    const day = String(today.getDate()).padStart(2, '0'); // Ensure two digits with leading zero if necessary
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed, so add 1
+    const year = today.getFullYear();
+
+    // Format date as "DD/MM/YYYY"
+    const formattedDate = `${day}/${month}/${year}`;
 
     let client;
     try {
         client = await pool.connect();
-        const query = `INSERT INTO your_table_name (name, description) VALUES ($1, $2)`;
-        const values = [name, description];
-        await client.query(query, values);
+
+        // Query to retrieve the montant from the room table
+        const roomQuery = `SELECT prix FROM chambre WHERE chambre_id = $1`;
+        const roomResult = await client.query(roomQuery, [chambre_id]);
+        const price = roomResult.rows[0].prix;
+
+        const query = `INSERT INTO location (date_location, montant,
+             employe_id, client_id, reservation_id, chambre_id) VALUES ($1, $2, $3, $4, $5, $6,$7,$8);`;
+        const values = [formattedDate, price, employe_id,client_id,reservation_id,chambre_id];
+        const result= await client.query(query, values);
         res.json(result.rows);
     } catch (error) {
+        console.log(error);
         res.status(500).json({ message: 'Error retrieving data' });
     } finally {
         if (client) {
@@ -408,8 +431,8 @@ app.get('/dashboard_view_hotels', async (req, res) => {
     try {
         const client = await pool.connect();
         const query = `select * from hotel;`;
-        await client.query(query);
-        res.json({ message: 'Hotels viewed successfully!' });
+        const result = await client.query(query);
+        res.json(result.rows);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error viewing hotels' });
@@ -477,9 +500,8 @@ app.get('/dashboard_view_rooms', async (req, res) => {
     try {
         const client = await pool.connect();
         const query = `select * from chambre;`;
-        await client.query(query);
-
-        res.json({ message: 'Rooms dispayed successfully!' });
+        const result = await client.query(query);
+        res.json(result.rows);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error viewing rooms' });

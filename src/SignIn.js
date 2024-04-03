@@ -1,5 +1,5 @@
 import './App.css';
-import { useContext, useState } from 'react';
+import { useContext, useState, useRef } from 'react';
 import './ProfilePage.css';
 import { useNavigate } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
@@ -11,75 +11,89 @@ import axios from 'axios';
 
 
 
-function SignIn({showSignInSection}) {
-  const {visibility,setVisibility}=useContext(profileContext);
+function SignIn({ showSignInSection }) {
 
-  const navigate=useNavigate();
+  const nameRef = useRef(null);
+  const nasRef = useRef(null);
+
+  const { visibility, setVisibility } = useContext(profileContext);
+
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
-    /*
+    const name = nameRef.current.value;
+    const nas = nasRef.current.value;
 
-    if (name !== "" && address !== "" && phoneNumber !== "" && nas !== "" && role!== "") {
+    let user=visibility.userType
+
+    if (name !== "" && nas !== "") {
       try {
-          const response = await axios.post('localhost/dashboard_create_employee_account', {
-              name,
-              address,
-              phoneNumber,
-              nas,
-              role,
-          });
+        const response = await axios.get('http://localhost:5000/signin', {
+          name,
+          nas,
+          user,
+        });
 
-          console.log("Employee Account created successfully:", response.data);
-          //the response should include the the client id
+        console.log("Employee Account logged successfully:", response.data);
+
+
+        if (user == "client") {
+          setVisibility(prevState => ({ ...prevState, isVisible: false, canUpdateMain: true }));
+          navigate('/',{ state: { } })
+        } else if( user == "employee"){
+          setVisibility(prevState => ({ ...prevState, isVisible: false, canUpdateMain: true }));
+          navigate('/',{ state: { } })
+        }
+        else {
+          setVisibility(prevState => ({ ...prevState, isVisible: false, canUpdateMain: true }));
+          //navigate to the room page with the all the rooms available, the role of the user and tell if it's a reservation or not
+          navigate('/dashboard');
+        }
+        //the response should include the the client id
+        
       } catch (error) {
-          console.log("error creating employee account:", error);
+        console.log("error logging account:", error);
       }
-      console.log("employee data:", { name, address, phoneNumber, nas,role });
-  } else {
-      console.error("Fill inputs for creating employee account")
-  };
-  */
-
-    //if success
-
-    if (visibility.userType=="client" || visibility.userType=="employee" ){
-      setVisibility(prevState=>({...prevState,isVisible:false,canUpdateMain:true}));
-      navigate('/')
-    }else{
-      setVisibility(prevState=>({...prevState,isVisible:false,canUpdateMain:true}));
-      //navigate to the room page with the all the rooms available, the role of the user and tell if it's a reservation or not
-      navigate('/dashboard'); 
-
-    }
+      console.log("Logging credentials:", { name, nas });
+    } else {
+      console.error("Fill inputs for logging in")
+    };
   }
 
 
   return (
     <>
-      
+
       <div className='profile'>
         <div className='container title'>
-          <CgProfile size={50} color="white"/>
-          <h1>Sign in</h1> 
+          <CgProfile size={50} color="white" />
+          <h1>Sign in</h1>
         </div>
         <div>
           <Form className='authentication-form' >
-            <Form.Group className="form-group" controlId="formBasicEmail">
-              <Form.Label>Email</Form.Label>
-              <Form.Control type="email" name="email" placeholder="email@email.com" />
+            <Form.Group className="form-group" controlId="formBasicFullName">
+              <Form.Label>Full name</Form.Label>
+              <Form.Control type="text" ref={nameRef} name="name" placeholder="Full name" />
             </Form.Group>
 
 
-            <Form.Group className="form-group" controlId="formBasicPassword">
-              <Form.Label>Password</Form.Label>
-              <Form.Control type="password" name="password" placeholder="email@email.com" />
+            <Form.Group className="form-group" controlId="formBasicNas">
+              <Form.Label>NAS</Form.Label>
+              <Form.Control type="numeric" ref={nasRef} name="nas" placeholder="--- --- ---" />
             </Form.Group>
 
-            <Button variant="dark" className="btn mt-4" type="button" name="login" onClick={handleLogin}>
+            {visibility.userType == "client" &&
+              <><Button variant="dark" className="btn mt-4" type="button" name="login" onClick={()=>handleLogin()}>
               Login
             </Button>
-            {visibility.userType=="client" &&
-              <span>Don't have an account, <Link onClick={()=>showSignInSection(false)}>Create one</Link></span>
+            <span>Don't have an account, <Link onClick={() => showSignInSection(false)}>Create one</Link></span>
+            </>
+            }
+
+            {visibility.userType != "client" &&
+              <Button variant="dark" className="btn mt-4" type="button" name="login" onClick={()=>handleLogin()}>
+              Login
+            </Button>
             }
 
           </Form>
