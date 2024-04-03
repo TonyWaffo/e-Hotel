@@ -55,9 +55,7 @@ app.get('/signin', async (req, res) => {
 
     let client;
     let query;
-    console.log(user);
-    console.log(name);
-    console.log(nas);
+
     try {
         client = await pool.connect();
 
@@ -68,12 +66,8 @@ app.get('/signin', async (req, res) => {
         }
         const values = [name, nas];
         const result=await client.query(query, values);
-        if (result.rows.length === 0) {
-            console.log(result.rows);
-            return res.status(404).json({ message: 'User not found' }); // Or a more specific message
-          }
-          const resp = result.rows[0]; // Access client_id only if rows exist
-          res.json({ resp });
+        const response = result.rows[0]; // Access client_id only if rows exist
+        res.json({ response });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error Logging in' });
