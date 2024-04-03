@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { profileContext } from './App';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { ImCross } from "react-icons/im";
 
 
 
@@ -17,6 +18,8 @@ function SignUp({showSignInSection}) {
   const nasRef=useRef(null);
   const phoneRef=useRef(null);
   const addressRef=useRef(null);
+
+  const [registrationError,setRegistrationError]=useState({error:false,message:""});
 
   const navigate = useNavigate();
   const {visibility,setVisibility}=useContext(profileContext);
@@ -38,31 +41,34 @@ function SignUp({showSignInSection}) {
         });
 
         console.log("Employee Account created successfully:", response.data);
+        
+        if (response.data.length == 0) {
+          setRegistrationError({ error: true, message: " No user found" });
+        } else {
 
+          if (visibility.userType == "client") {
+            setVisibility(prevState => ({ ...prevState, isVisible: false, canUpdateMain: true }));
+            navigate('/', { state: {} })
+          } else if (visibility.userType == "employee") {
+            setVisibility(prevState => ({ ...prevState, isVisible: false, canUpdateMain: true }));
+            navigate('/', { state: {} })
+          }
+          else {
+            setVisibility(prevState => ({ ...prevState, isVisible: false, canUpdateMain: true }));
+            //navigate to the room page with the all the rooms available, the role of the user and tell if it's a reservation or not
+            navigate('/dashboard');
+          }
 
-        if (visibility.userType == "client") {
-          setVisibility(prevState => ({ ...prevState, isVisible: false, canUpdateMain: true }));
-          navigate('/',{ state: { } })
-        } else if( visibility.userType == "employee"){
-          setVisibility(prevState => ({ ...prevState, isVisible: false, canUpdateMain: true }));
-          navigate('/',{ state: { } })
+          setRegistrationError({ error: false, message: "" });
         }
-        else {
-          setVisibility(prevState => ({ ...prevState, isVisible: false, canUpdateMain: true }));
-          //navigate to the room page with the all the rooms available, the role of the user and tell if it's a reservation or not
-          navigate('/dashboard');
-        }
-        //the response should include the the client id
         
       } catch (error) {
         console.log("error creating employee account:", error);
       }
       console.log("employee data:", { name, nas });
     } else {
-      console.error("Fill inputs for creating employee account")
+      setRegistrationError({ error: true, message: " Fill all inputs" });
     };
-
-    setVisibility({isVisible:false,userType:""});
   }
 
   return (
@@ -93,6 +99,9 @@ function SignUp({showSignInSection}) {
               <Form.Label>Address</Form.Label>
               <Form.Control type="text" ref={addressRef} name="address" placeholder=" Street number, city, Country" />
             </Form.Group>
+
+            {registrationError.error && <span className='input-error'><ImCross size={20} /> {registrationError.message}</span>}
+
 
             <Button variant="dark" className="btn mt-4" type="button" name="login" onClick={handleRegistration}>
               Create account

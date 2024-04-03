@@ -8,6 +8,7 @@ import { CgProfile } from "react-icons/cg";
 import { Link } from 'react-router-dom';
 import { profileContext } from './App';
 import axios from 'axios';
+import { ImCross } from "react-icons/im";
 
 
 
@@ -15,6 +16,8 @@ function SignIn({ showSignInSection }) {
 
   const nameRef = useRef(null);
   const nasRef = useRef(null);
+
+  const [registrationError,setRegistrationError]=useState({error:false,message:""});
 
   const { visibility, setVisibility } = useContext(profileContext);
 
@@ -24,30 +27,34 @@ function SignIn({ showSignInSection }) {
     const name = nameRef.current.value;
     const nas = nasRef.current.value;
 
-    let user=visibility.userType
+    let user=visibility.userType;
 
     if (name !== "" && nas !== "") {
       try {
-        const response = await axios.get('http://localhost:5000/signin', {
+        const response = await axios.get('http://localhost:5000/signin', { params: {
           name,
           nas,
           user,
-        });
+        } });
 
-        console.log("Employee Account logged successfully:", response.data);
+        console.log("Response", response.data);
 
-
-        if (user == "client") {
-          setVisibility(prevState => ({ ...prevState, isVisible: false, canUpdateMain: true }));
-          navigate('/',{ state: { } })
-        } else if( user == "employee"){
-          setVisibility(prevState => ({ ...prevState, isVisible: false, canUpdateMain: true }));
-          navigate('/',{ state: { } })
-        }
-        else {
-          setVisibility(prevState => ({ ...prevState, isVisible: false, canUpdateMain: true }));
-          //navigate to the room page with the all the rooms available, the role of the user and tell if it's a reservation or not
-          navigate('/dashboard');
+        if (Object.keys(response.data).length === 0) {
+          setRegistrationError({ error: true, message: "No user found" });
+        } else {
+          if (user == "client") {
+            setVisibility(prevState => ({ ...prevState, isVisible: false, canUpdateMain: true }));
+            navigate('/', { state: {} })
+          } else if (user == "employee") {
+            setVisibility(prevState => ({ ...prevState, isVisible: false, canUpdateMain: true }));
+            navigate('/', { state: {} })
+          }
+          else {
+            setVisibility(prevState => ({ ...prevState, isVisible: false, canUpdateMain: true }));
+            //navigate to the room page with the all the rooms available, the role of the user and tell if it's a reservation or not
+            navigate('/dashboard');
+          }
+          setRegistrationError({ error: false, message: "" });
         }
         //the response should include the the client id
         
@@ -56,7 +63,7 @@ function SignIn({ showSignInSection }) {
       }
       console.log("Logging credentials:", { name, nas });
     } else {
-      console.error("Fill inputs for logging in")
+      setRegistrationError({ error: true, message: "Fill all inputs" });
     };
   }
 
@@ -81,6 +88,8 @@ function SignIn({ showSignInSection }) {
               <Form.Label>NAS</Form.Label>
               <Form.Control type="numeric" ref={nasRef} name="nas" placeholder="--- --- ---" />
             </Form.Group>
+
+            {registrationError.error && <span className='input-error'><ImCross size={20} /> {registrationError.message}</span>}
 
             {visibility.userType == "client" &&
               <><Button variant="dark" className="btn mt-4" type="button" name="login" onClick={()=>handleLogin()}>

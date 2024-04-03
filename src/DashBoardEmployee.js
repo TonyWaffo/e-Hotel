@@ -36,7 +36,7 @@ function DashboardEmployee() {
         const role = roleRef.current.value;
         if (name !== "" && address !== "" && phoneNumber !== "" && nas !== "" && role!== "") {
             try {
-                const response = await axios.post('/dashboard_create_employee_account', {
+                const response = await axios.post('http://localhost:5000/dashboard_create_employee_account', {
                     name,
                     address,
                     phoneNumber,
@@ -60,7 +60,7 @@ function DashboardEmployee() {
         const employeeId = employeeIdRef2.current.value;
         if (employeeId !== "") {
             try {
-                const response = await axios.delete(`/delete_employee/${employeeId}`);
+                const response = await axios.delete(`http://localhost:5000/delete_employee/${employeeId}`);
 
                 console.log("Employee Account deleted successfully:", response.data);
             } catch (error) {
@@ -83,7 +83,7 @@ function DashboardEmployee() {
         const role = roleRef2.current.value;
         if (employeeId !== "" && name !== "" && address !== "" && phoneNumber !== "" && nas !== "" && role!== "") {
             try {
-                const response = await axios.put('/dashboard_update_employee_account', {
+                const response = await axios.put('http://localhost:5000/dashboard_update_employee_account', {
                     employeeId,
                     name,
                     address,
@@ -105,7 +105,7 @@ function DashboardEmployee() {
     //view all employees
     const viewAllemployees = async () => {
         try {
-            const response = await axios.get('/dashboard_view_account');
+            const response = await axios.get('http://localhost:5000/dashboard_view_employees_account');
 
             console.log("All employees:", response.data);
         } catch (error) {

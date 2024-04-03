@@ -32,7 +32,7 @@ function DashboardRoom() {
         const commodity = commodityRef.current.value;
         if (roomId !== "" && issues !== "" && view !== "" && commodity !== "") {
             try {
-                const response = await axios.post('/dashboard_create_room', {
+                const response = await axios.post('http://localhost:5000/dashboard_create_room', {
                     roomId,
                     issues,
                     view,
@@ -55,7 +55,7 @@ function DashboardRoom() {
         const roomId = roomIdRef3.current.value;
         if (roomId !== "") {
             try {
-                const response = await axios.delete(`/delete_room/${roomId}`);
+                const response = await axios.delete(`http://localhost:5000/delete_room/${roomId}`);
 
                 console.log("Room deleted successfully:", response.data);
             } catch (error) {
@@ -76,7 +76,7 @@ function DashboardRoom() {
         const commodity = commodityRef2.current.value;
         if (roomId !== "" && issues !== "" && view !== "" && commodity !== "") {
             try {
-                const response = await axios.put('/dashboard_update_room', {
+                const response = await axios.put('http://localhost:5000/dashboard_update_room', {
                     roomId,
                     issues,
                     view,
@@ -93,10 +93,10 @@ function DashboardRoom() {
         };
     }
 
-    //view all room
+    //view all rooms
     const viewAllRooms = async () => {
         try {
-            const response = await axios.get('/dashboard_view_rooms');
+            const response = await axios.get('http://localhost:5000/dashboard_view_rooms');
 
             console.log("All rooms:", response.data);
         } catch (error) {
