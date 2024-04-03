@@ -285,10 +285,10 @@ app.delete('/delete_client/:clientId', async (req, res) => {
         const values = [clientId];
         await client.query(query, values);
 
-        res.json({ message: 'Data created successfully!' });
+        res.json({ message: 'client deleted successfully!' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Error creating data' });
+        res.status(500).json({ message: `Error deleting client ${clientId}` });
     } finally {
         client.release(); // Release the connection back to the pool
     }
@@ -347,10 +347,6 @@ app.post('/dashboard_update_employee_account', async (req, res) => {
 // **Rental: Delete an employee accoont**
 app.delete('/delete_employee/:employeeId', async (req, res) => {
 
-    /**
-     * the request for creating a rental should include [arrivDate,departDate,employeeID,clientID,ReservationID,numChambre]
-     */
-
     const employeeId = req.params.employeeId;
     let client;
 
@@ -360,10 +356,10 @@ app.delete('/delete_employee/:employeeId', async (req, res) => {
         const values = [employeeId];
         await client.query(query, values);
 
-        res.json({ message: 'Data created successfully!' });
+        res.json({ message: 'Employee deleted successfully!' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Error creating data' });
+        res.status(500).json({ message: `Error deleting employee ${employeeId}` });
     } finally {
         client.release(); // Release the connection back to the pool
     }
@@ -537,14 +533,14 @@ app.delete('/delete_room/:roomId', async (req, res) => {
 
     try {
         client = await pool.connect();
-        const query = `delete from room where chambre_id=$1;`;
+        const query = `delete from chambre where chambre_id=$1;`;
         const values = [roomId];
         await client.query(query, values);
 
         res.json({ message: 'Room deleted successfully!' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Error deleting room' });
+        res.status(500).json({ message: `Error deleting rooom ${roomId}` });
     } finally {
         client.release(); // Release the connection back to the pool
     }
