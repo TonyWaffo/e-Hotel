@@ -232,44 +232,80 @@ app.post('/create_rental', async (req, res) => {
 // **Dashboard: Create client account**
 app.post('/dashboard_create_client_account', async (req, res) => {
 
-    const { name, description } = req.body; // Extract data from request body
+    const { name, address,phoneNumber,nas } = req.body; // Extract data from request body
 
     let client;
     try {
         client = await pool.connect();
-        const query = `INSERT INTO your_table_name (name, description) VALUES ($1, $2)`;
-        const values = [name, description];
+        const query = `INSERT INTO client (nom, adresse,telephone,nas) VALUES ($1, $2, $3, $4);`;
+        const values = [name, address,phoneNumber,nas];
         await client.query(query, values);
 
-        res.json({ message: 'Data created successfully!' });
+        res.json({ message: 'Client created successfully!' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Error creating data' });
+        res.status(500).json({ message: 'Error creating client' });
     } finally {
         client.release(); // Release the connection back to the pool
     }
 });
 
 // **Dashroom: Update client account**
-app.post('/dashboard_update_client_account', async (req, res) => {
+app.put('/dashboard_update_client_account/:clientId', async (req, res) => {
+    const clientId = req.params.clientId;
 
-    const { name, description } = req.body; // Extract data from request body
+    // Column mapping
+    const columnMapping = {
+        clientId: 'client_id',
+        name: 'nom',
+        address: 'adresse',
+        phoneNumber: 'telephone',
+        nas: 'nas'
+    };
+
+    let detailsToUpdate = req.body; // Extract data from request body
+
+    let query = `UPDATE client SET`;
+    let values = [];
+
+    // Iterate over the properties of the data sent
+    for (const key in detailsToUpdate) {
+        if (Object.hasOwnProperty.call(detailsToUpdate, key)) {
+            const value = detailsToUpdate[key];
+            // Check if the key value exists in the mapping
+            if (columnMapping[key]) {
+                // Append column and value to the SQL
+                values.push(value);
+                query += ` ${columnMapping[key]} = $${values.length},`; // Note the comma at the end
+            }
+        }
+    }
+
+    // Remove the comma at the end of the actual query
+    query = query.slice(0, -1);
+
+    // Add the WHERE clause
+    query += ` WHERE client_id = '${clientId}';`;
 
     let client;
 
     try {
         client = await pool.connect();
-        const query = `INSERT INTO your_table_name (name, description) VALUES ($1, $2)`;
-        const values = [name, description];
-        await client.query(query, values);
+        console.log(query);
+        console.log(values);
+        await client.query(query, values); // Provide values here
 
-        res.json({ message: 'Data created successfully!' });
+
+        res.json({ message: 'Client updated successfully!' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Error creating data' });
+        res.status(500).json({ message: 'Error updating client' });
     } finally {
-        client.release(); // Release the connection back to the pool
+        if (client) {
+            client.release(); // Release the connection back to the pool
+        }
     }
+
 });
 
 // **Rental: Delete a client accoont**
@@ -281,7 +317,7 @@ app.delete('/delete_client/:clientId', async (req, res) => {
 
     try {
         client = await pool.connect();
-        const query = `delete from client where client_id=$1`;
+        const query = `delete from client where client_id=$1;`;
         const values = [clientId];
         await client.query(query, values);
 
@@ -301,68 +337,82 @@ app.delete('/delete_client/:clientId', async (req, res) => {
 // **Dashroom: Create employee account**
 app.post('/dashboard_create_employee_account', async (req, res) => {
     
-    const { name, description } = req.body; // Extract data from request body
-    let client;
+    const { name, address,phoneNumber,nas,role } = req.body; // Extract data from request body
 
+    let client;
     try {
         client = await pool.connect();
-        const query = `INSERT INTO your_table_name (name, description) VALUES ($1, $2)`;
-        const values = [name, description];
+        const query = `INSERT INTO employe (nom, adresse,telephone,nas,role) VALUES ($1, $2, $3, $4, $5);`;
+        const values = [name, address,phoneNumber,nas,role];
         await client.query(query, values);
 
-        res.json({ message: 'Data created successfully!' });
+        res.json({ message: 'Employee created successfully!' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Error creating data' });
+        res.status(500).json({ message: 'Error creating employee' });
     } finally {
         client.release(); // Release the connection back to the pool
     }
 });
 
 // **Dashroom: Update employee account**
-app.post('/dashboard_update_employee_account', async (req, res) => {
-
-    /**
-     * the request for creating a rental should include [arrivDate,departDate,employeeID,clientID,ReservationID,numChambre]
-     */
-
-    const { name, description } = req.body; // Extract data from request body
-    let client;
-
-    try {
-        client = await pool.connect();
-        const query = `INSERT INTO your_table_name (name, description) VALUES ($1, $2)`;
-        const values = [name, description];
-        await client.query(query, values);
-
-        res.json({ message: 'Data created successfully!' });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Error creating data' });
-    } finally {
-        client.release(); // Release the connection back to the pool
-    }
-});
-
-// **Rental: Delete an employee accoont**
-app.delete('/delete_employee/:employeeId', async (req, res) => {
+app.put('/dashboard_update_employee_account/:employeeId', async (req, res) => {
 
     const employeeId = req.params.employeeId;
+
+    // Column mapping
+    const columnMapping = {
+        employeeId: 'employe_id',
+        name: 'nom',
+        address: 'adresse',
+        phoneNumber: 'telephone',
+        nas: 'nas',
+        role:'role',
+    };
+
+    let detailsToUpdate = req.body; // Extract data from request body
+
+    let query = `UPDATE employe SET`;
+    let values = [];
+
+    // Iterate over the properties of the data sent
+    for (const key in detailsToUpdate) {
+        if (Object.hasOwnProperty.call(detailsToUpdate, key)) {
+            const value = detailsToUpdate[key];
+            // Check if the key value exists in the mapping
+            if (columnMapping[key]) {
+                // Append column and value to the SQL
+                values.push(value);
+                query += ` ${columnMapping[key]} = $${values.length},`; // Note the comma at the end
+            }
+        }
+    }
+
+    // Remove the comma at the end of the actual query
+    query = query.slice(0, -1);
+
+    // Add the WHERE clause
+    query += ` WHERE employe_id = '${employeeId}';`;
+
     let client;
 
     try {
         client = await pool.connect();
-        const query = `delete from employe where employe_id=$1`;
-        const values = [employeeId];
-        await client.query(query, values);
+        console.log(query);
+        console.log(values);
+        await client.query(query, values); // Provide values here
 
-        res.json({ message: 'Employee deleted successfully!' });
+
+        res.json({ message: 'Employee updated successfully!' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: `Error deleting employee ${employeeId}` });
+        res.status(500).json({ message: 'Error updating employee' });
     } finally {
-        client.release(); // Release the connection back to the pool
+        if (client) {
+            client.release(); // Release the connection back to the pool
+        }
     }
+
 });
 
 // **dashboard: View all clients accounts**
@@ -408,28 +458,59 @@ app.get('/dashboard_view_employees_account', async (req, res) => {
 
 
 // **Dashboard: Update hotel**
-app.post('/dashboard_update_hotel', async (req, res) => {
+app.put('/dashboard_update_hotel/:hotelId', async (req, res) => {
 
-    /**
-     * the request for creating a rental should include [arrivDate,departDate,employeeID,clientID,ReservationID,numChambre]
-     */
+    const hotelId = req.params.hotelId;
 
-    const { name, description } = req.body; // Extract data from request body
+    // Column mapping
+    const columnMapping = {
+        email: 'email',
+        address: 'adresse',
+        phoneNumber: 'telephone',
+        classHotel: 'nombre_etoile'
+    };
+
+    let detailsToUpdate = req.body; // Extract data from request body
+
+    let query = `UPDATE hotel SET`;
+    let values = [];
+
+    // Iterate over the properties of the data sent
+    for (const key in detailsToUpdate) {
+        if (Object.hasOwnProperty.call(detailsToUpdate, key)) {
+            const value = detailsToUpdate[key];
+            // Check if the key value exists in the mapping
+            if (columnMapping[key]) {
+                // Append column and value to the SQL
+                values.push(value);
+                query += ` ${columnMapping[key]} = $${values.length},`; // Note the comma at the end
+            }
+        }
+    }
+
+    // Remove the comma at the end of the actual query
+    query = query.slice(0, -1);
+
+    // Add the WHERE clause
+    query += ` WHERE hotel_id = '${hotelId}';`;
 
     let client;
 
     try {
         client = await pool.connect();
-        const query = `INSERT INTO your_table_name (name, description) VALUES ($1, $2)`;
-        const values = [name, description];
-        await client.query(query, values);
+        console.log(query);
+        console.log(values);
+        await client.query(query, values); // Provide values here
 
-        res.json({ message: 'Data created successfully!' });
+
+        res.json({ message: 'Hotel updated successfully!' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Error creating data' });
+        res.status(500).json({ message: 'Error updating hotel' });
     } finally {
-        client.release(); // Release the connection back to the pool
+        if (client) {
+            client.release(); // Release the connection back to the pool
+        }
     }
 });
 
@@ -459,21 +540,17 @@ app.get('/dashboard_view_hotels', async (req, res) => {
 // **Dashboard: Create room**
 app.post('/dashboard_create_room', async (req, res) => {
 
-    /**
-     * the request for creating a rental should include [arrivDate,departDate,employeeID,clientID,ReservationID,numChambre]
-     */
-
-    const { name, description } = req.body; // Extract data from request body
+    const { roomId, issues,view, commodity } = req.body; // Extract data from request body
 
     let client;
 
     try {
         client = await pool.connect();
-        const query = `INSERT INTO your_table_name (name, description) VALUES ($1, $2)`;
-        const values = [name, description];
+        const query = `INSERT INTO chambre (chambre_id, probleme,commodite,vue) VALUES ($1, $2, $3, $4);`;
+        const values = [roomId,issues,commodity, view];
         await client.query(query, values);
 
-        res.json({ message: 'Data created successfully!' });
+        res.json({ message: 'Room created successfully!' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error creating data' });
@@ -483,27 +560,58 @@ app.post('/dashboard_create_room', async (req, res) => {
 });
 
 // **Dashboard: Update room**
-app.put('/dashboard_update_room', async (req, res) => {
+app.put('/dashboard_update_room/:roomId', async (req, res) => {
 
-    /**
-     * the request for creating a rental should include [arrivDate,departDate,employeeID,clientID,ReservationID,numChambre]
-     */
+    const roomId = req.params.roomId;
 
-    const { name, description } = req.body; // Extract data from request body
+    // Column mapping
+    const columnMapping = {
+        issues: 'probleme',
+        view: 'vue',
+        commodity: 'commodite',
+    };
+
+    let detailsToUpdate = req.body; // Extract data from request body
+
+    let query = `UPDATE chambre SET`;
+    let values = [];
+
+    // Iterate over the properties of the data sent
+    for (const key in detailsToUpdate) {
+        if (Object.hasOwnProperty.call(detailsToUpdate, key)) {
+            const value = detailsToUpdate[key];
+            // Check if the key value exists in the mapping
+            if (columnMapping[key]) {
+                // Append column and value to the SQL
+                values.push(value);
+                query += ` ${columnMapping[key]} = $${values.length},`; // Note the comma at the end
+            }
+        }
+    }
+
+    // Remove the comma at the end of the actual query
+    query = query.slice(0, -1);
+
+    // Add the WHERE clause
+    query += ` WHERE chambre_id = '${roomId}';`;
+
     let client;
 
     try {
         client = await pool.connect();
-        const query = `INSERT INTO your_table_name (name, description) VALUES ($1, $2)`;
-        const values = [name, description];
-        await client.query(query, values);
+        console.log(query);
+        console.log(values);
+        await client.query(query, values); // Provide values here
 
-        res.json({ message: 'Data created successfully!' });
+
+        res.json({ message: 'Room updated successfully!' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Error creating data' });
+        res.status(500).json({ message: 'Error updating room' });
     } finally {
-        client.release(); // Release the connection back to the pool
+        if (client) {
+            client.release(); // Release the connection back to the pool
+        }
     }
 });
 

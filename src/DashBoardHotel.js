@@ -26,8 +26,7 @@ function DashboardHotel() {
         const classHotel = classRef.current.value;
         if (hotelId !== "" && email !== "" && address !== "" && phoneNumber !== "" && classHotel !== "") {
             try {
-                const response = await axios.put('http://localhost:5000/dashboard_update_hotel', {
-                    hotelId,
+                const response = await axios.put(`http://localhost:5000/dashboard_update_hotel/${hotelId}`, {
                     email,
                     address,
                     phoneNumber,

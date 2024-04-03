@@ -76,8 +76,7 @@ function DashboardRoom() {
         const commodity = commodityRef2.current.value;
         if (roomId !== "" && issues !== "" && view !== "" && commodity !== "") {
             try {
-                const response = await axios.put('http://localhost:5000/dashboard_update_room', {
-                    roomId,
+                const response = await axios.put('http://localhost:5000/dashboard_update_room/${roomId}', {
                     issues,
                     view,
                     commodity,

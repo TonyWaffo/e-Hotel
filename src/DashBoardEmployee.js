@@ -83,8 +83,7 @@ function DashboardEmployee() {
         const role = roleRef2.current.value;
         if (employeeId !== "" && name !== "" && address !== "" && phoneNumber !== "" && nas !== "" && role!== "") {
             try {
-                const response = await axios.put('http://localhost:5000/dashboard_update_employee_account', {
-                    employeeId,
+                const response = await axios.put('http://localhost:5000/dashboard_update_employee_account/${employeeId}', {
                     name,
                     address,
                     phoneNumber,
@@ -96,7 +95,6 @@ function DashboardEmployee() {
             } catch (error) {
                 console.log("error updating employee data:", error);
             }
-            console.log("employee data:", { employeeId, name, address, phoneNumber, nas,role });
         } else {
             console.error("fill inputs for updating employee");
         }
