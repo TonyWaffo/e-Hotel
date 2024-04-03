@@ -7,11 +7,11 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 const pool = new Pool({
-    user:process.env.DB_USER,
-    password:process.env.DB_PASSWORD,
-    host:process.env.DB_HOST,
-    port:process.env.DB_PORT,
-    database:process.env.DB_NAME,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    database: process.env.DB_NAME,
 });
 
 pool.on('connect', () => {
@@ -77,18 +77,13 @@ app.get('/signin', async (req, res) => {
 
 // **Room search for client**
 app.get('/search_rooms_client', async (req, res) => {
-    /*the query should match [ departDate, arrivDate,minPrice, maxPrice,capacity,superficy,
-    HotelChain,hotelCategory, maybe number of Hotels]
-    and the result should include [chainHotel,hotel, numChambre, categories,commodity,
-    issues ,price,departDate, arrivDate]
-    */ 
-   //const roomSearchCriteria=req.params;
-   const {clientId,arrivalDate,departureDate,
-    hotelChain,hotelCategory,minNumberRooms,maxNumberRooms,
-    minPrice,maxPrice,capacity,view,expandability
-    }=req.query;
 
-   let client;
+    const { clientId, arrivalDate, departureDate,
+        hotelChain, hotelCategory, minNumberRooms, maxNumberRooms,
+        minPrice, maxPrice, capacity, view, expandability
+    } = req.query;
+
+    let client;
     try {
         client = await pool.connect();
         const query = `SELECT * FROM chambre 
@@ -97,11 +92,8 @@ app.get('/search_rooms_client', async (req, res) => {
         and extensible=${expandability} 
         and capacite = ${capacity};`;
         const result = await client.query(query);
-
-        console.error(result.rows);
         res.json(result.rows);
     } catch (error) {
-        console.error("error taking data",error);
         res.status(500).json({ message: 'Error retrieving data' });
     } finally {
         if (client) {
@@ -112,47 +104,50 @@ app.get('/search_rooms_client', async (req, res) => {
 
 // **Room search for employee**
 app.get('/search_rooms_employee', async (req, res) => {
-    /*the query should match [ departDate, arrivDate,minPrice, maxPrice,capacity,superficy,
-    HotelChain,hotelCategory, maybe number of Hotels]
-    and the result should include [chainHotel,hotel, numChambre, categories,commodity,
-    issues ,price,departDate, arrivDate]
-    */ 
-   let client;
+
+    const { clientId, arrivalDate, departureDate,
+        hotelChain, hotelCategory, minNumberRooms, maxNumberRooms,
+        minPrice, maxPrice, capacity, view, expandability
+    } = req.query;
+
+    let client;
     try {
         client = await pool.connect();
-        const query = `SELECT * FROM your_table_name`;
+        const query = `SELECT * FROM chambre 
+        where prix between ${minPrice} and ${maxPrice}
+         
+        and extensible=${expandability} 
+        and capacite = ${capacity};`;
         const result = await client.query(query);
-
         res.json(result.rows);
     } catch (error) {
-        console.error("retrieving data error",error);
         res.status(500).json({ message: 'Error retrieving data' });
     } finally {
-        client.release(); // Release the connection back to the pool
+        if (client) {
+            client.release(); // Release the connection back to the pool
+        }
     }
 });
 
 // **Reservation: Search reservation**
-app.post('/search_reservation', async (req, res) => {
+app.get('/search_reservation', async (req, res) => {
 
-    /**
-     * the request for creating reservation should include [arrivDate,departDate,clientID,numChambre]
-     */
+    const reservationId = req.query.reservationId;
 
-    const { name, description } = req.body; // Extract data from request body
-
+    let client;
     try {
-        const client = await pool.connect();
-        const query = `INSERT INTO your_table_name (name, description) VALUES ($1, $2)`;
-        const values = [name, description];
-        await client.query(query, values);
-
-        res.json({ message: 'Data created successfully!' });
+        client = await pool.connect();
+        const query = `SELECT * FROM reservation 
+            where reservation_id= $1;`;
+        const result = await client.query(query, [reservationId]);
+        res.json(result.rows);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Error creating data' });
+        res.status(500).json({ message: 'Error retrieving data' });
     } finally {
-        client.release(); // Release the connection back to the pool
+        if (client) {
+            client.release(); // Release the connection back to the pool
+        }
     }
 });
 
@@ -160,48 +155,48 @@ app.post('/search_reservation', async (req, res) => {
 // **Booking: create a reservation**
 app.post('/create_reservation', async (req, res) => {
 
-    /**
-     * the request for creating reservation should include [arrivDate,departDate,clientID,numChambre]
-     */
+    const { clientId, arrivalDate, departureDate,
+        hotelChain, hotelCategory, minNumberRooms, maxNumberRooms,
+        minPrice, maxPrice, capacity, view, expandability
+    } = req.body;
 
-    const { name, description } = req.body; // Extract data from request body
-
+    let client;
     try {
-        const client = await pool.connect();
+        client = await pool.connect();
         const query = `INSERT INTO your_table_name (name, description) VALUES ($1, $2)`;
         const values = [name, description];
         await client.query(query, values);
-
-        res.json({ message: 'Data created successfully!' });
+        res.json(result.rows);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Error creating data' });
+        res.status(500).json({ message: 'Error retrieving data' });
     } finally {
-        client.release(); // Release the connection back to the pool
+        if (client) {
+            client.release(); // Release the connection back to the pool
+        }
     }
 });
 
 // **Rental: Rent a rental for the client by the employee**
 app.post('/create_rental', async (req, res) => {
 
-    /**
-     * the request for creating a rental should include [arrivDate,departDate,employeeID,clientID,ReservationID,numChambre]
-     */
+    const { clientId, arrivalDate, departureDate,
+        hotelChain, hotelCategory, minNumberRooms, maxNumberRooms,
+        minPrice, maxPrice, capacity, view, expandability
+    } = req.body;
 
-    const { name, description } = req.body; // Extract data from request body
-
+    let client;
     try {
-        const client = await pool.connect();
+        client = await pool.connect();
         const query = `INSERT INTO your_table_name (name, description) VALUES ($1, $2)`;
         const values = [name, description];
         await client.query(query, values);
-
-        res.json({ message: 'Data created successfully!' });
+        res.json(result.rows);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Error creating data' });
+        res.status(500).json({ message: 'Error retrieving data' });
     } finally {
-        client.release(); // Release the connection back to the pool
+        if (client) {
+            client.release(); // Release the connection back to the pool
+        }
     }
 });
 
@@ -261,7 +256,7 @@ app.post('/dashboard_update_client_account', async (req, res) => {
 });
 
 // **Rental: Delete a client accoont**
-app.post('/delete_client/:clientId', async (req, res) => {
+app.delete('/delete_client/:clientId', async (req, res) => {
 
     /**
      * the request for creating a rental should include [arrivDate,departDate,employeeID,clientID,ReservationID,numChambre]
@@ -337,7 +332,7 @@ app.post('/dashboard_update_employee_account', async (req, res) => {
 });
 
 // **Rental: Delete an employee accoont**
-app.post('/delete_employee/:employeeId', async (req, res) => {
+app.delete('/delete_employee/:employeeId', async (req, res) => {
 
     /**
      * the request for creating a rental should include [arrivDate,departDate,employeeID,clientID,ReservationID,numChambre]
@@ -361,11 +356,7 @@ app.post('/delete_employee/:employeeId', async (req, res) => {
 });
 
 // **dashboard: View all accounts**
-app.post('/dashboard_view_account', async (req, res) => {
-
-    /**
-     * the request for creating a rental should include [arrivDate,departDate,employeeID,clientID,ReservationID,numChambre]
-     */
+app.get('/dashboard_view_account', async (req, res) => {
 
     const { name, description } = req.body; // Extract data from request body
 
@@ -413,24 +404,15 @@ app.post('/dashboard_update_hotel', async (req, res) => {
 });
 
 // **Dashboard: View hotels**
-app.post('/dashboard_view_hotels', async (req, res) => {
-
-    /**
-     * the request for creating a rental should include [arrivDate,departDate,employeeID,clientID,ReservationID,numChambre]
-     */
-
-    const { name, description } = req.body; // Extract data from request body
-
+app.get('/dashboard_view_hotels', async (req, res) => {
     try {
         const client = await pool.connect();
-        const query = `INSERT INTO your_table_name (name, description) VALUES ($1, $2)`;
-        const values = [name, description];
-        await client.query(query, values);
-
-        res.json({ message: 'Data created successfully!' });
+        const query = `select * from hotel;`;
+        await client.query(query);
+        res.json({ message: 'Hotels viewed successfully!' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Error creating data' });
+        res.status(500).json({ message: 'Error viewing hotels' });
     } finally {
         client.release(); // Release the connection back to the pool
     }
@@ -466,7 +448,7 @@ app.post('/dashboard_create_room', async (req, res) => {
 });
 
 // **Dashboard: Update room**
-app.post('/dashboard_update_room', async (req, res) => {
+app.put('/dashboard_update_room', async (req, res) => {
 
     /**
      * the request for creating a rental should include [arrivDate,departDate,employeeID,clientID,ReservationID,numChambre]
@@ -490,48 +472,37 @@ app.post('/dashboard_update_room', async (req, res) => {
 });
 
 // **Dashboard: View room**
-app.post('/dashboard_view_rooms', async (req, res) => {
-
-    /**
-     * the request for creating a rental should include [arrivDate,departDate,employeeID,clientID,ReservationID,numChambre]
-     */
-
-    const { name, description } = req.body; // Extract data from request body
+app.get('/dashboard_view_rooms', async (req, res) => {
 
     try {
         const client = await pool.connect();
-        const query = `INSERT INTO your_table_name (name, description) VALUES ($1, $2)`;
-        const values = [name, description];
-        await client.query(query, values);
+        const query = `select * from chambre;`;
+        await client.query(query);
 
-        res.json({ message: 'Data created successfully!' });
+        res.json({ message: 'Rooms dispayed successfully!' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Error creating data' });
+        res.status(500).json({ message: 'Error viewing rooms' });
     } finally {
         client.release(); // Release the connection back to the pool
     }
 });
 
 // **Rental: Delete a room**
-app.post('/delete_room/:roomId', async (req, res) => {
-
-    /**
-     * the request for creating a rental should include [arrivDate,departDate,employeeID,clientID,ReservationID,numChambre]
-     */
+app.delete('/delete_room/:roomId', async (req, res) => {
 
     const roomId = req.params.roomId;
 
     try {
         const client = await pool.connect();
-        const query = `INSERT INTO your_table_name (name, description) VALUES ($1, $2)`;
-        const values = [name, description];
+        const query = `delete from room where chambre_id=$1;`;
+        const values = [roomId];
         await client.query(query, values);
 
-        res.json({ message: 'Data created successfully!' });
+        res.json({ message: 'Room deleted successfully!' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Error creating data' });
+        res.status(500).json({ message: 'Error deleting room' });
     } finally {
         client.release(); // Release the connection back to the pool
     }

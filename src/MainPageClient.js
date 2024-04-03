@@ -83,27 +83,6 @@ function MainPageClient({ role }) {
       console.error('Fill all inputs for searching rooms');
     };
 
-
-    availableRooms = [
-      {
-        chain: 'Marriot Chain',
-        hotel: 'Sheraton',
-        id: 20114,
-        categories: 4,
-        commodity: ['balcony', 'kitchen', 'amenities'],
-        issues: ['heater', 'air conditionner'],
-        price: 200,
-      },
-      {
-        chain: 'Germain Chain',
-        hotel: 'Alt',
-        id: 1114,
-        categories: 5,
-        commodity: ['balcony', 'kitchen', 'amenities'],
-        issues: ['Ice machine', 'air conditionner'],
-        price: 400,
-      },
-    ];
   }
 
   return (

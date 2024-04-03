@@ -71,7 +71,7 @@ function MainPageEmployee({ role }) {
       roomSearchCriteria.view = (viewRef.current.value === 'true') ? true : false;
 
       try {
-        const response = await axios.post('localhost/search_rooms_employee', roomSearchCriteria);
+        const response = await axios.get('http://localhost:5000/search_rooms_employee', { params: roomSearchCriteria });
         console.log('Rooms found successfully:', response.data);
         availableRooms = response.data;
         //navigate to the room page with the all the rooms available, the role of the user and tell if it's a reservation or not
@@ -84,48 +84,6 @@ function MainPageEmployee({ role }) {
       console.error('Fill all inputs for searching rooms');
     };
 
-
-    availableRooms = [
-      {
-        chain: 'Marriot Chain',
-        hotel: 'Sheraton',
-        id: 20114,
-        categories: 4,
-        commodity: ['balcony', 'kitchen', 'amenities'],
-        issues: ['heater', 'air conditionner'],
-        price: 200,
-      },
-      {
-        chain: 'Germain Chain',
-        hotel: 'Alt',
-        id: 1114,
-        categories: 5,
-        commodity: ['balcony', 'kitchen', 'amenities'],
-        issues: ['Ice machine', 'air conditionner'],
-        price: 400,
-      },
-      {
-        chain: 'Marriot Chain',
-        hotel: 'Delta',
-        id: 12114,
-        categories: 2,
-        commodity: ['dog friendly', 'oven', 'smoker friendly'],
-        issues: ['n0 security', 'smell weed'],
-        price: 50,
-      },
-      {
-        chain: 'Four seasons Chain',
-        hotel: 'Four seasons',
-        id: 20214,
-        categories: 5,
-        commodity: ['balcony', 'kitchen', 'amenities', 'club', 'spa'],
-        issues: [],
-        price: 700,
-      },
-    ];
-    //navigate to the room page with the all the rooms available, the role of the user and tell if it's a reservation or not
-    //remove the following line when connected to the server
-    navigate('/rooms', { state: { availableRooms, reservation, role } });
   }
 
   const reservationSearch = async () => {
@@ -142,9 +100,7 @@ function MainPageEmployee({ role }) {
     if (reservationId!=='') {
 
       try {
-        const response = await axios.post('localhost/search_reservation', {
-          reservationId,
-        });
+        const response = await axios.get('http://localhost:5000/search_reservation',{ params: {reservationId} });
         roomFromReservation = response.data;
         //navigate to the room page with the all the rooms available, the role of the user and tell if it's a reservation or not
         navigate('/rooms', { state: { roomFromReservation, reservation, role } });
@@ -155,23 +111,6 @@ function MainPageEmployee({ role }) {
     } else {
       console.error('Fill all inputs for searching reservatiion');
     };
-
-    roomFromReservation = [
-      {
-        chain: 'Marriot Chain',
-        hotel: 'Sheraton',
-        id: 20114,
-        categories: 4,
-        commodity: ['balcony', 'kitchen', 'amenities'],
-        issues: ['heater', 'air conditionner'],
-        price: 200,
-      },
-    ];
-
-    //navigate to the room page with the all the rooms available, the role of the user and tell if it's a reservation or not
-    //remove next line when connected to the backend
-    navigate('/rooms', { state: { roomFromReservation, reservation, role } });
-
   }
 
   return (
