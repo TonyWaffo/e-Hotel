@@ -2,13 +2,16 @@ import './App.css';
 import Banner from './Banner';
 import './Dashboard.css';
 import './MainPage.css';
-import { useRef } from 'react';
+import { useRef,useState } from 'react';
 import { Form } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 
 
 function DashboardRoom() {
+
+    const [allRooms,setAllRooms]=useState([]) ;
+
     // reference the inputs relative to creation
     const roomIdRef = useRef(null);
     const issuesRef = useRef(null);
@@ -98,6 +101,7 @@ function DashboardRoom() {
             const response = await axios.get('http://localhost:5000/dashboard_view_rooms');
 
             console.log("All rooms:", response.data);
+            setAllRooms(response.data);
         } catch (error) {
             console.log("error Fetching rooms:", error);
         }
@@ -180,6 +184,11 @@ function DashboardRoom() {
                     <Button variant="dark" className="btn mb-4" type="button" name="submit" onClick={()=>viewAllRooms()}  style={{position:"absolute",right:"0",bottom:"0"}}>
                         See all rooms
                     </Button>
+                    <ul>
+                    {allRooms.map((room)=>{
+                        return  <li>{room.chambre_id} - {room.prix}$ </li>
+                    })}
+                </ul>
                 </Form>
             </div>
 

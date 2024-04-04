@@ -2,13 +2,16 @@ import './App.css';
 import Banner from './Banner';
 import './Dashboard.css';
 import './MainPage.css';
-import { useRef } from 'react';
+import { useRef,useState } from 'react';
 import { Form } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 
 
 function DashboardClient() {
+
+    const [allClients,setAllClients]=useState([]) ;
+
     // reference the inputs relative to creation
     const nameRef = useRef(null);
     const addressRef = useRef(null);
@@ -100,6 +103,7 @@ function DashboardClient() {
             const response = await axios.get('http://localhost:5000/dashboard_view_clients_account');
 
             console.log("All clients:", response.data);
+            setAllClients(response.data);
         } catch (error) {
             console.log("error Fetching clients:", error);
         }
@@ -188,6 +192,12 @@ function DashboardClient() {
                     <Button variant="dark" className="btn mb-4" type="button" name="viewClients" onClick={() => viewAllClients()} style={{ position: "absolute", right: "0", bottom: "0" }} >
                         See all clients
                     </Button>
+
+                    <ul>
+                    {allClients.map((client)=>{
+                        return  <li>{client.client_id}, {client.nom} </li>
+                    })}
+                    </ul>
                 </Form>
             </div>
 

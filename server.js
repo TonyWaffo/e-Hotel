@@ -426,8 +426,8 @@ app.get('/dashboard_view_clients_account', async (req, res) => {
         client = await pool.connect();
         const query = `select * from client;`;
         result =await client.query(query);
-        console.error(result.rows);
-        res.json({ message: 'Clients extracted successfully!' });
+        console.log(result.rows);
+        res.json(result.rows);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error extracting clients' });
@@ -445,8 +445,8 @@ app.get('/dashboard_view_employees_account', async (req, res) => {
         client = await pool.connect();
         const query = `select * from employe;`;
         result =await client.query(query);
-        console.error(result.rows);
-        res.json({ message: 'Employees extracted successfully!' });
+        console.log(result.rows);
+        res.json(result.rows);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error extracting employee' });

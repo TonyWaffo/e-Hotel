@@ -3,12 +3,15 @@ import './App.css';
 import Banner from './Banner';
 import './Dashboard.css';
 import './MainPage.css';
-import { useRef } from 'react';
+import { useRef,useState } from 'react';
 import { Form } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 
 
 function DashboardEmployee() {
+
+    const [allEmployees,setAllEmployees]=useState([]) ;
+
     // reference the inputs relative to creation
     const nameRef = useRef(null);
     const addressRef = useRef(null);
@@ -106,6 +109,7 @@ function DashboardEmployee() {
             const response = await axios.get('http://localhost:5000/dashboard_view_employees_account');
 
             console.log("All employees:", response.data);
+            setAllEmployees(response.data);
         } catch (error) {
             console.log("error Fetching employees:", error);
         }
@@ -205,8 +209,15 @@ function DashboardEmployee() {
                     <Button variant="dark" className="btn mb-4" type="button" name="viewEmployees" onClick={() => viewAllemployees()} style={{ position: "absolute", right: "0", bottom: "0" }} >
                         See all employees
                     </Button>
+
+                    <ul>
+                    {allEmployees.map((employee)=>{
+                        return  <li>{employee.employe_id}, {employee.nom} </li>
+                    })}
+                    </ul>
                 </Form>
             </div>
+        
 
         </>
     );
