@@ -77,8 +77,9 @@ function MainPageClient({ role }) {
         if(availableRooms.length==0){
           setRoomSearchError({error:true,message:"No room could be found"});
         }else{
+          let clientId=roomSearchCriteria.clientId;
           //navigate to the room page with the all the rooms available, the role of the user and tell if it's a reservation or not
-        navigate('/rooms', { state: { availableRooms, reservation, role } });
+        navigate('/rooms', { state: { availableRooms, reservation, role , clientId} });
         setRoomSearchError({error:false,message:""});
         }
       } catch (error) {

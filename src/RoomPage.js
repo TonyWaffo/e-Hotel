@@ -5,7 +5,7 @@ import './RoomPage.css';
 import Room from './Room';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { useLocation } from 'react-router-dom';
+import { useLocation,useNavigate } from 'react-router-dom';
 import MyVerticallyCenteredModal from './MyVerticallyCenteredModal';
 import { MdOutlineWarningAmber } from "react-icons/md";
 import axios from 'axios';
@@ -20,6 +20,8 @@ function RoomPage() {
     const expiryDateRef=useRef("");
     const cvcRef=useRef("");
 
+    const navigate=useNavigate();
+
     //get access to the queryResult send by the main page
     const location=useLocation();
 
@@ -29,6 +31,10 @@ function RoomPage() {
     let roomFromReservation=location.state?.roomFromReservation || [];
 
     const reservation=location.state.reservation;
+
+    const clientId=location.state.clientId;
+
+    const employeeId=location.state.employeeId;
 
     const role=location.state.role;
 
@@ -64,20 +70,29 @@ function RoomPage() {
     }
 
 
+    
+
     //Create rental
     const createRental= async ()=>{
-        if(checkCreditCard()){
+        
+        if(checkCreditCard() && selectedRoom!=null ){
+
             //Create a rental  via the backend
             setCardError(false);
-            //setModalShow(true);
 
-            //proccess data
+            // Create a new object including selectedRoom and clientId
+            const requestBody = {
+                ...selectedRoom, // Spread all properties of selectedRoom
+                employeeId: employeeId // Add clientId property
+            };
+            console.log(requestBody);
             try {
-                const response = await axios.post('http://localhost:5000/create_rental', selectedRoom);
+                const response = await axios.post('http://localhost:5000/create_rental', requestBody);
                 console.log(response.data);
-                setModalShow(true);
+                //navigate('/');
               } catch (error) {
                 console.log("error creating rental:", error);
+                //setModalShow(true);
               }
             //reset all the forms of the website 
         }else{
@@ -90,16 +105,20 @@ function RoomPage() {
     const createReservation= async()=>{
         if (selectedRoom!=null) {
 
+            // Create a new object including selectedRoom and clientId
+            const requestBody = {
+                ...selectedRoom, // Spread all properties of selectedRoom
+                clientId: clientId // Add clientId property
+            };
+
             try {
-              const response = await axios.post('/create_reservation', selectedRoom);
-              //the response should include the reservation id
+              const response = await axios.post('http://localhost:5000/create_reservation', requestBody);
               console.log(response.data);
-              //setModalShow(true);
+              navigate('/');
             } catch (error) {
               console.log("error creating reservation:", error);
+              setModalShow(true);
             }
-            setModalShow(true);
-            console.log(selectedRoom);
           } else {
             console.error("replace this by a condition if needed");
           };

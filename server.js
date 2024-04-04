@@ -28,6 +28,16 @@ pool.on('connect', () => {
 
 app.use(cors()); // Enable CORS for requests from React app
 
+
+// Function to generate a random alphanumeric string of specified length
+function generateRandomString(length) {   
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';  
+     let randomString = '';   
+     for (let i = 0; i < length; i++) {     
+        randomString += characters.charAt(Math.floor(Math.random() * characters.length));   
+    }   return randomString; 
+}
+
 // **Sign up: Send user profile to the database**
 app.post('/signup', async (req, res) => {
 
@@ -61,13 +71,13 @@ app.get('/signin', async (req, res) => {
 
         if (user == "client") {
             query = `select client_id from client where nom=$1 and nas=$2;`;
-        } else if (user == "employee"){
+        } else if (user == "employee") {
             query = `select employe_id from employe where nom=$1 and nas=$2;`;
-        }else{
+        } else {
             query = `select gestionnaire_id from gestionnaire where gestionnaire_id=$1 and hotel_id <> $2`;
         }
         const values = [name, nas];
-        const result=await client.query(query, values);
+        const result = await client.query(query, values);
         const response = result.rows[0]; // Access client_id only if rows exist
         res.json({ response });
     } catch (error) {
@@ -159,35 +169,35 @@ app.get('/search_reservation', async (req, res) => {
 });
 
 
+// Function to generate a unique client ID using async/await 
+async function generateUniqueClientId() {
+    let clientId;
+    let client = await pool.connect();
+    try {
+        while (true) {
+            clientId = generateRandomString(10);
+            const sql = 'SELECT COUNT(*) AS count FROM client WHERE client_id = $1';
+            const result = await client.query(sql, [clientId]);
+            const count = result.rows[0].count;
+            if (count === 0) {
+                break;
+                // Exit the loop if the client ID is unique   
+            }
+        }
+        return clientId;
+        // Return the unique client ID
+    } finally {
+        client.release(); // Ensure to release the client connection
+    }
+} 
+
 // **Booking: create a reservation**
 app.post('/create_reservation', async (req, res) => {
 
-    const { clientId, arrivalDate, departureDate,
+    const { chambre_id, arrivalDate, departureDate,
         hotelChain, hotelCategory, minNumberRooms, maxNumberRooms,
-        minPrice, maxPrice, capacity, view, expandability
+        minPrice, maxPrice, capacity, view, expandability,clientId
     } = req.body;
-
-    let client;
-    try {
-        client = await pool.connect();
-        const query = `INSERT INTO your_table_name (name, description) VALUES ($1, $2)`;
-        const values = [name, description];
-        await client.query(query, values);
-        res.json(result.rows);
-    } catch (error) {
-        res.status(500).json({ message: 'Error retrieving data' });
-    } finally {
-        if (client) {
-            client.release(); // Release the connection back to the pool
-        }
-    }
-});
-
-// **Rental: Rent a rental for the client by the employee**
-app.post('/create_rental', async (req, res) => {
-
-    const { reservation_id, date_reservation,
-        employe_id, client_id, archive_id, chambre_id } = req.body;
 
     // Get today's date
     const today = new Date();
@@ -201,6 +211,43 @@ app.post('/create_rental', async (req, res) => {
     const formattedDate = `${day}/${month}/${year}`;
 
     let client;
+    console.log(clientId);
+    try {
+        client = await pool.connect();
+        const query = `insert into reservation (reservation_id, date_reservation, client_id, chambre_id) VALUES ($1, $2, $3, $4);`;
+        const values = [generateRandomString(10),formattedDate,clientId,chambre_id];
+        const result = await client.query(query, values);
+        res.json(result.rows);
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: 'Error creating reservation' });
+    } finally {
+        if (client) {
+            client.release(); // Release the connection back to the pool
+        }
+    }
+});
+
+// **Rental: Rent a rental for the client by the employee**
+app.post('/create_rental', async (req, res) => {
+
+    const { reservation_id, date_reservation, client_id, archive_id, chambre_id,employeeId } = req.body;
+
+    // Get today's date
+    const today = new Date();
+
+    // Extract day, month, and year
+    const day = String(today.getDate()).padStart(2, '0'); // Ensure two digits with leading zero if necessary
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed, so add 1
+    const year = today.getFullYear();
+
+    // Format date as "DD/MM/YYYY"
+    const formattedDate = `${day}/${month}/${year}`;
+
+    console.log(employeeId,reservation_id);
+
+    let client;
+    let locationId=generateRandomString(10);
     try {
         client = await pool.connect();
 
@@ -209,10 +256,10 @@ app.post('/create_rental', async (req, res) => {
         const roomResult = await client.query(roomQuery, [chambre_id]);
         const price = roomResult.rows[0].prix;
 
-        const query = `INSERT INTO location (date_location, montant,
-             employe_id, client_id, reservation_id, chambre_id) VALUES ($1, $2, $3, $4, $5, $6,$7,$8);`;
-        const values = [formattedDate, price, employe_id,client_id,reservation_id,chambre_id];
-        const result= await client.query(query, values);
+        const query = `INSERT INTO location (location_id,date_location, montant,
+             employe_id, client_id, reservation_id, chambre_id) VALUES ($1, $2, $3, $4, $5, $6, $7);`;
+        const values = [locationId,formattedDate, price, employeeId, client_id, reservation_id, chambre_id];
+        const result = await client.query(query, values);
         res.json(result.rows);
     } catch (error) {
         console.log(error);
@@ -234,13 +281,13 @@ app.post('/create_rental', async (req, res) => {
 // **Dashboard: Create client account**
 app.post('/dashboard_create_client_account', async (req, res) => {
 
-    const { name, address,phoneNumber,nas } = req.body; // Extract data from request body
+    const { name, address, phoneNumber, nas } = req.body; // Extract data from request body
 
     let client;
     try {
         client = await pool.connect();
         const query = `INSERT INTO client (nom, adresse,telephone,nas) VALUES ($1, $2, $3, $4);`;
-        const values = [name, address,phoneNumber,nas];
+        const values = [name, address, phoneNumber, nas];
         await client.query(query, values);
 
         res.json({ message: 'Client created successfully!' });
@@ -360,14 +407,14 @@ app.delete('/delete_employee/:employeeId', async (req, res) => {
 
 // **Dashroom: Create employee account**
 app.post('/dashboard_create_employee_account', async (req, res) => {
-    
-    const { name, address,phoneNumber,nas,role } = req.body; // Extract data from request body
+
+    const { name, address, phoneNumber, nas, role } = req.body; // Extract data from request body
 
     let client;
     try {
         client = await pool.connect();
         const query = `INSERT INTO employe (nom, adresse,telephone,nas,role) VALUES ($1, $2, $3, $4, $5);`;
-        const values = [name, address,phoneNumber,nas,role];
+        const values = [name, address, phoneNumber, nas, role];
         await client.query(query, values);
 
         res.json({ message: 'Employee created successfully!' });
@@ -391,7 +438,7 @@ app.put('/dashboard_update_employee_account/:employeeId', async (req, res) => {
         address: 'adresse',
         phoneNumber: 'telephone',
         nas: 'nas',
-        role:'role',
+        role: 'role',
     };
 
     let detailsToUpdate = req.body; // Extract data from request body
@@ -447,7 +494,7 @@ app.get('/dashboard_view_clients_account', async (req, res) => {
     try {
         client = await pool.connect();
         const query = `select * from client;`;
-        result =await client.query(query);
+        result = await client.query(query);
         console.log(result.rows);
         res.json(result.rows);
     } catch (error) {
@@ -466,7 +513,7 @@ app.get('/dashboard_view_employees_account', async (req, res) => {
     try {
         client = await pool.connect();
         const query = `select * from employe;`;
-        result =await client.query(query);
+        result = await client.query(query);
         console.log(result.rows);
         res.json(result.rows);
     } catch (error) {
@@ -564,14 +611,14 @@ app.get('/dashboard_view_hotels', async (req, res) => {
 // **Dashboard: Create room**
 app.post('/dashboard_create_room', async (req, res) => {
 
-    const { roomId, issues,view, commodity } = req.body; // Extract data from request body
+    const { roomId, issues, view, commodity } = req.body; // Extract data from request body
 
     let client;
 
     try {
         client = await pool.connect();
         const query = `INSERT INTO chambre (chambre_id, probleme,commodite,vue) VALUES ($1, $2, $3, $4);`;
-        const values = [roomId,issues,commodity, view];
+        const values = [roomId, issues, commodity, view];
         await client.query(query, values);
 
         res.json({ message: 'Room created successfully!' });
@@ -605,7 +652,7 @@ app.put('/dashboard_update_room/:roomId', async (req, res) => {
         if (Object.hasOwnProperty.call(detailsToUpdate, key)) {
             const value = detailsToUpdate[key];
             // Check if the key value exists in the mapping
-            if (value!="" && columnMapping[key]) {
+            if (value != "" && columnMapping[key]) {
                 // Append column and value to the SQL
                 values.push(value);
                 query += ` ${columnMapping[key]} = $${values.length},`; // Note the comma at the end

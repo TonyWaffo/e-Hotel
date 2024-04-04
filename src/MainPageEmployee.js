@@ -11,6 +11,7 @@ import axios from 'axios';
 function MainPageEmployee({ role }) {
 
   const reservationIdRef = useRef(null);
+  const employeeIdRef = useRef(null);
   const clientIdRef = useRef(null);
   const arrivalDateRef = useRef(null);
   const departureDateref = useRef(null);
@@ -104,9 +105,10 @@ function MainPageEmployee({ role }) {
     let roomFromReservation;
 
     const reservationId=reservationIdRef.current.value;
+    const employeeId=employeeIdRef.current.value
 
     //proccess the data and connect to back end
-    if (reservationId!=='') {
+    if (reservationId!=='' && employeeId!=='') {
 
       try {
         const response = await axios.get('http://localhost:5000/search_reservation',{ params: {reservationId} });
@@ -115,7 +117,7 @@ function MainPageEmployee({ role }) {
           setReservationError({error:true,message:"No room could be found"});
         }else{
                   //navigate to the room page with the all the rooms available, the role of the user and tell if it's a reservation or not
-        navigate('/rooms', { state: { roomFromReservation, reservation, role } });
+        navigate('/rooms', { state: { roomFromReservation, reservation, role, employeeId } });
         setReservationError({error:false,message:""});
         }
       } catch (error) {
@@ -140,6 +142,10 @@ function MainPageEmployee({ role }) {
             <Form.Group className='form-group' controlId='formBasicReservationId'>
               <Form.Label>Reservation number (id)</Form.Label>
               <Form.Control type='text' name='reservationId' ref={reservationIdRef} placeholder='#reservationID' />
+            </Form.Group>
+            <Form.Group className='form-group' controlId='formBasicEmployeeId'>
+              <Form.Label>Employee (id)</Form.Label>
+              <Form.Control type='text' name='employeeId' ref={employeeIdRef} placeholder='#employeeID' />
             </Form.Group>
           </div>
           {reservationError.error && <span className='input-error'><ImCross size={20} />{reservationError.message}</span>}
