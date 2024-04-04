@@ -310,7 +310,7 @@ app.put('/dashboard_update_client_account/:clientId', async (req, res) => {
 
 });
 
-// **Rental: Delete a client accoont**
+// ** Delete a client accoont**
 app.delete('/delete_client/:clientId', async (req, res) => {
 
     const clientId = req.params.clientId;
@@ -327,6 +327,28 @@ app.delete('/delete_client/:clientId', async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: `Error deleting client ${clientId}` });
+    } finally {
+        client.release(); // Release the connection back to the pool
+    }
+});
+
+// ** Delete a client accoont**
+app.delete('/delete_employee/:employeeId', async (req, res) => {
+
+    const employeeId = req.params.employeeId;
+
+    let client;
+
+    try {
+        client = await pool.connect();
+        const query = `delete from employe where employe_id=$1;`;
+        const values = [employeeId];
+        await client.query(query, values);
+
+        res.json({ message: 'employee deleted successfully!' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: `Error deleting emplyee ${employeeId}` });
     } finally {
         client.release(); // Release the connection back to the pool
     }
@@ -583,7 +605,7 @@ app.put('/dashboard_update_room/:roomId', async (req, res) => {
         if (Object.hasOwnProperty.call(detailsToUpdate, key)) {
             const value = detailsToUpdate[key];
             // Check if the key value exists in the mapping
-            if (columnMapping[key]) {
+            if (value!="" && columnMapping[key]) {
                 // Append column and value to the SQL
                 values.push(value);
                 query += ` ${columnMapping[key]} = $${values.length},`; // Note the comma at the end

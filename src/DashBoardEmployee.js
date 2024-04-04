@@ -69,8 +69,6 @@ function DashboardEmployee() {
             } catch (error) {
                 console.error("Error deleting employee account:", error);
             }
-
-            console.log("employee data:",employeeId);
         } else {
             console.error("fill inputs for deleting employee account");
         }

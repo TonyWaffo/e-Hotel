@@ -2,13 +2,16 @@ import './App.css';
 import Banner from './Banner';
 import './Dashboard.css';
 import './MainPage.css'
-import { useRef } from 'react';
+import { useRef,useState } from 'react';
 import { Form } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 
 
 function DashboardHotel() {
+
+    const [allHotels,setAllHotels]=useState([]) ;
+
     // reference the inputs relative to update
     const emailRef = useRef(null);
     const addressRef = useRef(null);
@@ -49,6 +52,7 @@ function DashboardHotel() {
             const response = await axios.get('http://localhost:5000/dashboard_view_hotels');
 
             console.log("All Hotels:", response.data);
+            setAllHotels(response.data);
         } catch (error) {
             console.log("error Fetching hotels:", error);
         }
@@ -97,6 +101,13 @@ function DashboardHotel() {
                     <Button variant="dark" className="btn mb-4" type="button" name="submit" onClick={() => viewAllHotels()} style={{ position: "absolute", right: "0", bottom: "0" }} >
                         See all hotels
                     </Button>
+
+                    
+                    <ul>
+                    {allHotels.map((hotel)=>{
+                        return  <li>{hotel.hotel_id}, {hotel.nom} </li>
+                    })}
+                    </ul>
 
                 </Form>
             </div>

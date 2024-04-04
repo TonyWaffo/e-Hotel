@@ -47,7 +47,6 @@ function DashboardClient() {
             } catch (error) {
                 console.log("error creating client account:", error);
             }
-            console.log("client data:", { name, address, phoneNumber, nas });
         } else {
             console.error("Fill inputs for creating client account")
         };
@@ -65,8 +64,6 @@ function DashboardClient() {
             } catch (error) {
                 console.error("Error deleting client account:", error);
             }
-
-            console.log("client data:",clientId);
         } else {
             console.error("fill inputs for deleting client account");
         }

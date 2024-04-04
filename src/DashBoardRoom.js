@@ -2,7 +2,7 @@ import './App.css';
 import Banner from './Banner';
 import './Dashboard.css';
 import './MainPage.css';
-import { useRef,useState } from 'react';
+import { useRef, useState } from 'react';
 import { Form } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
@@ -10,7 +10,7 @@ import axios from 'axios';
 
 function DashboardRoom() {
 
-    const [allRooms,setAllRooms]=useState([]) ;
+    const [allRooms, setAllRooms] = useState([]);
 
     // reference the inputs relative to creation
     const roomIdRef = useRef(null);
@@ -65,33 +65,29 @@ function DashboardRoom() {
                 console.error("Error deleting room:", error);
             }
 
-            console.log("room data:",roomId);
+            console.log("room data:", roomId);
         } else {
             console.error("fill inputs for deleting room");
         }
     }
 
-     //update room
-     const handleRoomUpdate = async () => {
+    //update room
+    const handleRoomUpdate = async () => {
         const roomId = roomIdRef2.current.value;
         const issues = issuesRef2.current.value;
         const view = viewRef2.current.value;
         const commodity = commodityRef2.current.value;
-        if (roomId !== "" && issues !== "" && view !== "" && commodity !== "") {
-            try {
-                const response = await axios.put('http://localhost:5000/dashboard_update_room/${roomId}', {
-                    issues,
-                    view,
-                    commodity,
-                });
+        console.log(commodityRef2.current.value);
+        try {
+            const response = await axios.put(`http://localhost:5000/dashboard_update_room/${roomId}`, {
+                issues,
+                view,
+                commodity,
+            });
 
-                console.log("Room updated successfully:", response.data);
-            } catch (error) {
-                console.log("error updating room:", error);
-            }
-            console.log("room data:", { roomId, issues, view, commodity });
-        } else {
-            console.error("Fill inputs for updating room")
+            console.log("Room updated successfully:", response.data);
+        } catch (error) {
+            console.log("error updating room:", error);
         };
     }
 
@@ -111,12 +107,12 @@ function DashboardRoom() {
     return (
         <>
             <div className='mainpage-body-subcontainer'>
-            <Form >
+                <Form >
                     <h3>Room section</h3>
 
                     <h4>Add room in the hotel</h4>
                     <div className='form-row'>
-                    <Form.Group className="form-group" controlId="formBasicRoomId">
+                        <Form.Group className="form-group" controlId="formBasicRoomId">
                             <Form.Label>Room number</Form.Label>
                             <Form.Control type="text" ref={roomIdRef} name="roomId" placeholder="#roomID" />
                         </Form.Group>
@@ -138,13 +134,13 @@ function DashboardRoom() {
                         </Form.Group>
                     </div>
 
-                    <Button variant="dark" className="btn mb-4" type="button" name="submit" onClick={()=>handleRoomCreation()}>
+                    <Button variant="dark" className="btn mb-4" type="button" name="submit" onClick={() => handleRoomCreation()}>
                         Add room
                     </Button>
 
                     <h4>Update a room in the hotel</h4>
                     <div className='form-row'>
-                    <Form.Group className="form-group" controlId="formBasicRoomId">
+                        <Form.Group className="form-group" controlId="formBasicRoomId">
                             <Form.Label>Room number</Form.Label>
                             <Form.Control type="text" ref={roomIdRef2} name="roomId" placeholder="#roomID" />
                         </Form.Group>
@@ -160,13 +156,13 @@ function DashboardRoom() {
                             <Form.Control type="text" ref={viewRef2} name="view" placeholder="ex. View on the sea" />
                         </Form.Group>
 
-                        <Form.Group className="form-group" ref={commodityRef2} controlId="formBasicCommodity">
+                        <Form.Group className="form-group" controlId="formBasicCommodity">
                             <Form.Label>Commodity</Form.Label>
-                            <Form.Control type="text" name="commodity" placeholder="Commodity" />
+                            <Form.Control type="text" ref={commodityRef2} name="commodity" placeholder="Commodity" />
                         </Form.Group>
                     </div>
 
-                    <Button variant="dark" className="btn mb-4" type="button" name="submit" onClick={()=>handleRoomUpdate()} >
+                    <Button variant="dark" className="btn mb-4" type="button" name="submit" onClick={() => handleRoomUpdate()} >
                         Update room
                     </Button>
 
@@ -178,17 +174,17 @@ function DashboardRoom() {
                         </Form.Group>
                     </div>
 
-                    <Button variant="dark" className="btn mb-4" type="button" name="submit" onClick={()=>handleRoomDeletion()} >
+                    <Button variant="dark" className="btn mb-4" type="button" name="submit" onClick={() => handleRoomDeletion()} >
                         Remove room
                     </Button>
-                    <Button variant="dark" className="btn mb-4" type="button" name="submit" onClick={()=>viewAllRooms()}  style={{position:"absolute",right:"0",bottom:"0"}}>
+                    <Button variant="dark" className="btn mb-4" type="button" name="submit" onClick={() => viewAllRooms()} style={{ position: "absolute", right: "0", bottom: "0" }}>
                         See all rooms
                     </Button>
                     <ul>
-                    {allRooms.map((room)=>{
-                        return  <li>{room.chambre_id} - {room.prix}$ </li>
-                    })}
-                </ul>
+                        {allRooms.map((room) => {
+                            return <li>{room.chambre_id} - {room.prix}$ </li>
+                        })}
+                    </ul>
                 </Form>
             </div>
 
