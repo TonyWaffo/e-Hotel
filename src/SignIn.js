@@ -28,6 +28,9 @@ function SignIn({ showSignInSection }) {
     const nas = nasRef.current.value;
 
     let user=visibility.userType;
+    /*if(user=="admin"){
+      user="employee";
+    }*/
 
     if (name !== "" && nas !== "") {
       try {

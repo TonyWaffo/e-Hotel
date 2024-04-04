@@ -61,8 +61,10 @@ app.get('/signin', async (req, res) => {
 
         if (user == "client") {
             query = `select client_id from client where nom=$1 and nas=$2;`;
-        } else {
+        } else if (user == "employee"){
             query = `select employe_id from employe where nom=$1 and nas=$2;`;
+        }else{
+            query = `select gestionnaire_id from gestionnaire where gestionnaire_id=$1 and hotel_id <> $2`;
         }
         const values = [name, nas];
         const result=await client.query(query, values);
