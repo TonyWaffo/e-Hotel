@@ -286,8 +286,8 @@ app.post('/dashboard_create_client_account', async (req, res) => {
     let client;
     try {
         client = await pool.connect();
-        const query = `INSERT INTO client (nom, adresse,telephone,nas) VALUES ($1, $2, $3, $4);`;
-        const values = [name, address, phoneNumber, nas];
+        const query = `INSERT INTO client (client_id, nom, adresse,telephone,nas) VALUES ($1, $2, $3, $4, $5);`;
+        const values = [generateRandomString(10),name, address, phoneNumber, nas];
         await client.query(query, values);
 
         res.json({ message: 'Client created successfully!' });
@@ -322,7 +322,7 @@ app.put('/dashboard_update_client_account/:clientId', async (req, res) => {
         if (Object.hasOwnProperty.call(detailsToUpdate, key)) {
             const value = detailsToUpdate[key];
             // Check if the key value exists in the mapping
-            if (columnMapping[key]) {
+            if (value != "" && columnMapping[key]) {
                 // Append column and value to the SQL
                 values.push(value);
                 query += ` ${columnMapping[key]} = $${values.length},`; // Note the comma at the end
@@ -413,8 +413,8 @@ app.post('/dashboard_create_employee_account', async (req, res) => {
     let client;
     try {
         client = await pool.connect();
-        const query = `INSERT INTO employe (nom, adresse,telephone,nas,role) VALUES ($1, $2, $3, $4, $5);`;
-        const values = [name, address, phoneNumber, nas, role];
+        const query = `INSERT INTO employe (employe_id, nom, adresse,telephone,nas,role) VALUES ($1, $2, $3, $4, $5, $6);`;
+        const values = [generateRandomString(10),name, address, phoneNumber, nas, role];
         await client.query(query, values);
 
         res.json({ message: 'Employee created successfully!' });
@@ -451,7 +451,7 @@ app.put('/dashboard_update_employee_account/:employeeId', async (req, res) => {
         if (Object.hasOwnProperty.call(detailsToUpdate, key)) {
             const value = detailsToUpdate[key];
             // Check if the key value exists in the mapping
-            if (columnMapping[key]) {
+            if (value != "" && columnMapping[key]) {
                 // Append column and value to the SQL
                 values.push(value);
                 query += ` ${columnMapping[key]} = $${values.length},`; // Note the comma at the end
@@ -551,7 +551,7 @@ app.put('/dashboard_update_hotel/:hotelId', async (req, res) => {
         if (Object.hasOwnProperty.call(detailsToUpdate, key)) {
             const value = detailsToUpdate[key];
             // Check if the key value exists in the mapping
-            if (columnMapping[key]) {
+            if (value != "" && columnMapping[key]) {
                 // Append column and value to the SQL
                 values.push(value);
                 query += ` ${columnMapping[key]} = $${values.length},`; // Note the comma at the end

@@ -78,17 +78,21 @@ function DashboardRoom() {
         const view = viewRef2.current.value;
         const commodity = commodityRef2.current.value;
         console.log(commodityRef2.current.value);
-        try {
-            const response = await axios.put(`http://localhost:5000/dashboard_update_room/${roomId}`, {
-                issues,
-                view,
-                commodity,
-            });
-
-            console.log("Room updated successfully:", response.data);
-        } catch (error) {
-            console.log("error updating room:", error);
-        };
+        if(roomId!=""){
+            try {
+                const response = await axios.put(`http://localhost:5000/dashboard_update_room/${roomId}`, {
+                    issues,
+                    view,
+                    commodity,
+                });
+    
+                console.log("Room updated successfully:", response.data);
+            } catch (error) {
+                console.log("error updating room:", error);
+            };
+        }else{
+            console.log("Fill room id input");
+        }
     }
 
     //view all rooms

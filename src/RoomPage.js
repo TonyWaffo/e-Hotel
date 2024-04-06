@@ -89,7 +89,7 @@ function RoomPage() {
             try {
                 const response = await axios.post('http://localhost:5000/create_rental', requestBody);
                 console.log(response.data);
-                //navigate('/');
+                navigate('/');
               } catch (error) {
                 console.log("error creating rental:", error);
                 //setModalShow(true);
@@ -117,7 +117,7 @@ function RoomPage() {
               navigate('/');
             } catch (error) {
               console.log("error creating reservation:", error);
-              setModalShow(true);
+              //setModalShow(true);
             }
           } else {
             console.error("replace this by a condition if needed");

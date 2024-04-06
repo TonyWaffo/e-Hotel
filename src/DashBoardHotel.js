@@ -27,7 +27,7 @@ function DashboardHotel() {
         const address = addressRef.current.value;
         const phoneNumber = phoneNumberRef.current.value;
         const classHotel = classRef.current.value;
-        if (hotelId !== "" && email !== "" && address !== "" && phoneNumber !== "" && classHotel !== "") {
+        if (hotelId !== "") {
             try {
                 const response = await axios.put(`http://localhost:5000/dashboard_update_hotel/${hotelId}`, {
                     email,
@@ -42,7 +42,7 @@ function DashboardHotel() {
             }
             console.log("Hotel data:", { hotelId, email, address, phoneNumber, classHotel });
         } else {
-            console.error("Fill Hotel inputs to update");
+            console.error("Fill Hotel id input");
         }
     }
 

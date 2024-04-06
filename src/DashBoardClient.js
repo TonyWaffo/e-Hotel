@@ -76,7 +76,7 @@ function DashboardClient() {
         const address = addressRef2.current.value;
         const phoneNumber = phoneNumberRef2.current.value;
         const nas = nasRef2.current.value;
-        if (clientId !== "" && name !== "" && address !== "" && phoneNumber !== "" && nas !== "") {
+        if (clientId !== "") {
             try {
                 const response = await axios.put(`http://localhost:5000/dashboard_update_client_account/${clientId}`, {
                     name,
@@ -90,7 +90,7 @@ function DashboardClient() {
                 console.log("error updating client data:", error);
             }
         } else {
-            console.error("fill inputs for updating client account");
+            console.error("fill client id input");
         }
     }
 
